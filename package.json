@@ -1,0 +1,21 @@
+{
+  "name": "int64_t",
+  "version": "0.0.1",
+  "description": "64bit integer",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel src -d lib",
+    "test": "jest"
+  },
+  "keywords": [
+    "int64",
+    "64bit"
+  ],
+  "author": "gucchi",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-preset-env": "1.6.0",
+    "jest": "21.2.1"
+  }
+}
