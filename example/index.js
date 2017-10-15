@@ -8,3 +8,6 @@ console.log(i.shiftRight(33))
 console.log(i.shiftRight(1))
 console.log(i.shiftLeft(33))
 console.log(i.shiftLeft(1))
+
+let i2 = new Int64(0x12345678, 0x9abcdef0)
+console.log(i2.shiftRight(1).toString(16, true))

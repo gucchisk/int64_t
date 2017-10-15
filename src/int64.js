@@ -119,8 +119,9 @@ export class Int64 extends Int64Base {
 	break
       }
     }
+    str = pre + str
     if (negative) {
-      str = '-' + pre + str
+      str = '-' + str
     }
     return str
   }
