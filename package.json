@@ -1,7 +1,7 @@
 {
   "name": "int64_t",
   "version": "0.0.1",
-  "description": "64bit integer",
+  "description": "64bit integer in pure Javascript",
   "main": "index.js",
   "scripts": {
     "build": "babel src -d lib",
@@ -9,9 +9,11 @@
   },
   "keywords": [
     "int64",
-    "64bit"
+    "uint64",
+    "64bit",
+    "integer"
   ],
-  "author": "gucchi",
+  "author": "gucchisk",
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "6.26.0",
