@@ -1,8 +1,11 @@
 {
   "name": "int64_t",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "64bit integer in pure Javascript",
-  "main": "index.js",
+  "main": "lib/int64.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "babel src -d lib",
     "test": "jest"
