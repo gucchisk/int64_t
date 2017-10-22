@@ -12,8 +12,13 @@ jobs:
           name: test
           command: npm test
   build:
-    machine: true
+    docker:
+      - image: circleci/node:latest
     steps:
+      - checkout
+      - run:
+          name: install-npm
+          command: npm install
       - run:
           name: build
           command: npm run build
