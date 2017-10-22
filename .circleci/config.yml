@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image: circleci/node:latest
     steps:
@@ -11,6 +11,13 @@ jobs:
       - run:
           name: test
           command: npm test
+  build:
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - run:
+          name: build
+          command: npm run build
   deploy:
     machine: true
     steps:
@@ -27,7 +34,10 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build
+      - test
+      - build:
+          requires:
+            - test
       - deploy:
           requires:
             - build
