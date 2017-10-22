@@ -25,6 +25,7 @@ jobs:
 workflows:
   version: 2
   build_and_deploy:
+    machine: true
     jobs:
       - build
       - deploy:
