@@ -1,5 +1,3 @@
-
-
 class Int64Base {
   constructor (first, second) {
     // new Int64(Buffer)
@@ -60,6 +58,29 @@ class Int64Base {
       buf.writeUInt32BE(shifted_high >>> 0, 0)
       buf.writeUInt32BE(shifted_low >>> 0, 4)
     }
+    return new this.constructor(buf)
+  }
+
+  add (i) {
+    if (i.constructor.name !== this.constructor.name) {
+      const lType = this.constructor.name
+      const rType = i.constructor.name
+      throw new Error(`Cannot add ${lType} to ${rType}`)
+    }
+    const lHigh = this.buffer.readUInt32BE()
+    const lLow = this.buffer.readUInt32BE(4)
+    const ibuf = i.toBuffer()
+    const rHigh = ibuf.readUInt32BE()
+    const rLow = ibuf.readUInt32BE(4)
+
+    let high = lHigh + rHigh
+    let low = lLow + rLow
+    if (low >= 0x100000000) {
+      low &= 0xffffffff
+      high += 1
+    }
+    high &= 0xffffffff
+    const buf = int32PairToBuffer(high, low)
     return new this.constructor(buf)
   }
 }
