@@ -17,22 +17,26 @@ class Int64Base {
     throw new Error(`Invalid arguments`)
   }
 
-  and (int64) {
-    let buf = Buffer.alloc(8)
-    const int64_buf = int64.toBuffer()
-    for (let i = 0; i < 8; i++) {
-      buf[i] = this.buffer[i] & int64_buf[i]
-    }
-    return new this.constructor(buf)
+  and (i) {
+    const lHigh = this.buffer.readUInt32BE()
+    const lLow = this.buffer.readUInt32BE(4)
+    const ibuf = i.toBuffer()
+    const rHigh = ibuf.readUInt32BE()
+    const rLow = ibuf.readUInt32BE(4)
+    const high = lHigh & rHigh
+    const low = lLow & rLow
+    return new this.constructor(high, low)
   }
 
-  or (int64) {
-    let buf = Buffer.alloc(8)
-    const int64_buf = int64.toBuffer()
-    for (let i = 0; i < 8; i++) {
-      buf[i] = this.buffer[i] | int64_buf[i]
-    }
-    return new this.constructor(buf)
+  or (i) {
+    const lHigh = this.buffer.readUInt32BE()
+    const lLow = this.buffer.readUInt32BE(4)
+    const ibuf = i.toBuffer()
+    const rHigh = ibuf.readUInt32BE()
+    const rLow = ibuf.readUInt32BE(4)
+    const high = lHigh | rHigh
+    const low = lLow | rLow
+    return new this.constructor(high, low)
   }
 
   toBuffer () {
@@ -62,11 +66,6 @@ class Int64Base {
   }
 
   add (i) {
-    if (i.constructor.name !== this.constructor.name) {
-      const lType = this.constructor.name
-      const rType = i.constructor.name
-      throw new Error(`Cannot add ${lType} to ${rType}`)
-    }
     const lHigh = this.buffer.readUInt32BE()
     const lLow = this.buffer.readUInt32BE(4)
     const ibuf = i.toBuffer()
@@ -250,4 +249,12 @@ function shiftMaskLow(num) {
   if (num === 0 ) return 0
   const shift = 32 - num
   return (2 ** 32 - 1) >>> shift
+}
+
+function checkType(l, r) {
+  const lType = l.constructor.name
+  const rType = r.constructor.name
+  if (lType !== rType) {
+    throw new Error(`Cannot add ${lType} to ${rType}`)
+  }
 }

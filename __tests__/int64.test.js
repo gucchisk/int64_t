@@ -217,11 +217,13 @@ describe('Int64', () => {
       expect(i5.add(i6)).toEqual(new Int64(0x0, 0xf))
     })
     test('add different type', () => {
-      const i = new Int64(0x0, 0x0)
-      const ui = new UInt64(0x0, 0x0)
-      expect(() => {
-	i.add(ui)
-      }).toThrow('Cannot add Int64 to UInt64')
+      const i = new Int64(0x1, 0x0)
+      const ui = new UInt64(0x0, 0x2)
+      expect(i.add(ui)).toEqual(new Int64(0x1, 0x2))
+      expect(i.add(ui)).toBeInstanceOf(Int64)
+      // expect(() => {
+      // 	i.add(ui)
+      // }).toThrow('Cannot add Int64 to UInt64')
     })
   })
 })
@@ -320,11 +322,13 @@ describe('UInt64', () => {
       expect(i5.add(i6)).toEqual(new Int64(0x0, 0xf))
     })
     test('add different type', () => {
-      const i = new UInt64(0x0, 0x0)
-      const ui = new Int64(0x0, 0x0)
-      expect(() => {
-	i.add(ui)
-      }).toThrow('Cannot add UInt64 to Int64')
+      const ui = new UInt64(0x1, 0x0)
+      const i = new Int64(0x0, 0x2)
+      expect(ui.add(i)).toEqual(new UInt64(0x1, 0x2))
+      expect(ui.add(i)).toBeInstanceOf(UInt64)
+      // expect(() => {
+      // 	i.add(ui)
+      // }).toThrow('Cannot add UInt64 to Int64')
     })
   })
 })
