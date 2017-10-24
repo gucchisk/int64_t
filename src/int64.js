@@ -39,6 +39,17 @@ class Int64Base {
     return new this.constructor(high, low)
   }
 
+  xor (i) {
+    const lHigh = this.buffer.readUInt32BE()
+    const lLow = this.buffer.readUInt32BE(4)
+    const ibuf = i.toBuffer()
+    const rHigh = ibuf.readUInt32BE()
+    const rLow = ibuf.readUInt32BE(4)
+    const high = lHigh ^ rHigh
+    const low = lLow ^ rLow
+    return new this.constructor(high, low)
+  }
+
   toBuffer () {
     return this.buffer
   }
@@ -81,6 +92,11 @@ class Int64Base {
     high &= 0xffffffff
     const buf = int32PairToBuffer(high, low)
     return new this.constructor(buf)
+  }
+
+  minus (i) {
+    const xori = i.xor(UInt64.Max)
+    return this.add(xori).add(new UInt64(0, 0x1))
   }
 }
 
