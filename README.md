@@ -42,17 +42,38 @@ console.log(i.toString(16));  // 123456789abcdef0
 console.log(i.toString(16, true);  // 0x123456789abcdef0
 ```
 
+* add(int64) (+)
+```js
+let i1 = new Int64(0x12345678, 0x9abcdef0);
+let i2 = new Int64(0x11111111, 0x11111111);
+console.log(i1.add(i2).toString(16, true));  // 0x23456789abcdf001
+```
+
+* minus(int64) (-)
+```js
+let i1 = new Int64(0x12345678, 0x9abcdef0);
+let i2 = new Int64(0x11111111, 0x11111111);
+console.log(i1.minus(i2).toString(16, true));  // 0x123456789abcddf
+```
+
 * and(int64) (&)
 ```js
-let i = new Int64(0x12345678, 0x9abcdef0);
-console.log(i.add(new Int64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true));  // 0x020406080a0c0e00
+let i = new UInt64(0x12345678, 0x9abcdef0);
+console.log(i.add(new UInt64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true));  // 0x020406080a0c0e00
 ```
 
 * or(int64) (|)
 ```js
-let i = new Int64(0x12345678, 0x9abcdef0);
-console.log(i.or(new Int64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true));  // 0x1f3f5f7f9fbfdfff
+let i = new UInt64(0x12345678, 0x9abcdef0);
+console.log(i.or(new UInt64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true));  // 0x1f3f5f7f9fbfdfff
 ```
+
+* xor(int64) (^)
+```js
+let i = new UInt64(0x12345678, 0x9abcdef0);
+console.log(i.xor(new UInt64(0xffffffff, 0xffffffff)).toString(16, true));  // 0xedcba9876543210f
+```
+
 
 * shiftRight(number) (>>)
 ```js
