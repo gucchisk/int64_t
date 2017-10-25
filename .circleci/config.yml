@@ -36,6 +36,9 @@ workflows:
   test_and_deploy:
     jobs:
       - test
+          filters:
+            tags:
+              only: /.*/
       - build_and_deploy:
           requires:
             - test
