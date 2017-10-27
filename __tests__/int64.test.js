@@ -235,31 +235,31 @@ describe('Int64', () => {
       // }).toThrow('Cannot add Int64 to UInt64')
     })
   })
-  describe('minus', () => {
-    test('minus', () => {
+  describe('sub', () => {
+    test('sub', () => {
       const i1 = new Int64(0x11111111, 0x11111111)
       const i2 = new Int64(0x10101010, 0x01010101)
-      expect(i1.minus(i2)).toEqual(new Int64(0x01010101, 0x10101010))
+      expect(i1.sub(i2)).toEqual(new Int64(0x01010101, 0x10101010))
     })
-    test('minus brought high', () => {
+    test('sub brought high', () => {
       const i1 = new Int64(0x1, 0x0)
       const i2 = new Int64(0x0, 0x1)
-      expect(i1.minus(i2)).toEqual(new Int64(0x0, 0xffffffff))
+      expect(i1.sub(i2)).toEqual(new Int64(0x0, 0xffffffff))
     })
-    test('minus negative low', () => {
+    test('sub negative low', () => {
       const i1 = new Int64(0x0, 0x1)
       const i2 = new Int64(0x0, 0x2)
-      expect(i1.minus(i2)).toEqual(UInt64.Max)
+      expect(i1.sub(i2)).toEqual(UInt64.Max)
     })
-    test('minus negative high', () => {
+    test('sub negative high', () => {
       const i1 = new Int64(0x1, 0x0)
       const i2 = new Int64(0x2, 0x0)
-      expect(i1.minus(i2)).toEqual(new Int64(0xffffffff, 0x0))
+      expect(i1.sub(i2)).toEqual(new Int64(0xffffffff, 0x0))
     })
-    test('minus negative', () => {
+    test('sub negative', () => {
       const i1 = new Int64(0x1, 0x1)
       const i2 = new Int64(0x2, 0x2)
-      expect(i1.minus(i2)).toEqual(new Int64(0xfffffffe, 0xffffffff))
+      expect(i1.sub(i2)).toEqual(new Int64(0xfffffffe, 0xffffffff))
     })
   })
 })

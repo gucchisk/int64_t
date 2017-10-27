@@ -18,8 +18,8 @@ console.log(i.toString(16, true))
 // add()
 console.log(i.add(new UInt64(0x11111111, 0x11111111)).toString(16, true))
 
-// minus()
-console.log(i.minus(new UInt64(0x11111111, 0x11111111)).toString(16, true))
+// sub()
+console.log(i.sub(new UInt64(0x11111111, 0x11111111)).toString(16, true))
 
 // and()
 console.log(i.add(new UInt64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true))

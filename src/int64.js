@@ -94,7 +94,7 @@ class Int64Base {
     return new this.constructor(buf)
   }
 
-  minus (i) {
+  sub (i) {
     const xori = i.xor(UInt64.Max)
     return this.add(xori).add(new UInt64(0, 0x1))
   }

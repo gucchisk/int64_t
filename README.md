@@ -49,11 +49,11 @@ let i2 = new Int64(0x11111111, 0x11111111);
 console.log(i1.add(i2).toString(16, true));  // 0x23456789abcdf001
 ```
 
-* minus(int64) (-)
+* sub(int64) (-)
 ```js
 let i1 = new Int64(0x12345678, 0x9abcdef0);
 let i2 = new Int64(0x11111111, 0x11111111);
-console.log(i1.minus(i2).toString(16, true));  // 0x123456789abcddf
+console.log(i1.sub(i2).toString(16, true));  // 0x123456789abcddf
 ```
 
 * and(int64) (&)
