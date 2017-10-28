@@ -265,7 +265,9 @@ describe('Int64', () => {
   describe('mul', () => {
     test('mul', () => {
       const i = new Int64(0x12345678, 0x9abcdef0)
-      expect(i.mul(new Int64(0, 2))).toEqual(new Int64(0x2468acf1, 0x3579bde0))
+      const muli = i.mul(new Int64(0, 2))
+      expect(muli).toEqual(new Int64(0x2468acf1, 0x3579bde0))
+      expect(muli).toBeInstanceOf(Int64)
     })
     test('mul low int', () => {
       const i = new Int64(0x12345678, 0x9abcdef0)
@@ -399,6 +401,22 @@ describe('UInt64', () => {
       // expect(() => {
       // 	i.add(ui)
       // }).toThrow('Cannot add UInt64 to Int64')
+    })
+  })
+  describe('mul', () => {
+    test('mul', () => {
+      const i = new UInt64(0x12345678, 0x9abcdef0)
+      const muli = i.mul(new UInt64(0, 2))
+      expect(muli).toEqual(new UInt64(0x2468acf1, 0x3579bde0))
+      expect(muli).toBeInstanceOf(UInt64)
+    })
+    test('mul low int', () => {
+      const i = new UInt64(0x12345678, 0x9abcdef0)
+      expect(i.mul(new UInt64(0x0, 0x12345678))).toEqual(new UInt64(0x28f5c28e, 0x242d2080))
+    })
+    test('mul int64', () => {
+      const i = new UInt64(0x12345678, 0x9abcdef0)
+      expect(i.mul(new UInt64(0x12345678, 0x9abcdef0))).toEqual(new UInt64(0xa5e20890, 0xf2a52100))
     })
   })
 })
