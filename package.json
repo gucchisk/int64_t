@@ -1,6 +1,6 @@
 {
   "name": "int64_t",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "64bit integer in pure Javascript",
   "main": "lib/int64.js",
   "files": [
