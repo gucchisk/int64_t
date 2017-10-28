@@ -32,15 +32,7 @@ let i = new Int64(0x12345678, 0x9abcdef0);
 
 ## Feature
 
-* toString(radix, prefix)
-default radix is 10
-default prefix is false
-```js
-let i = new Int64(0x12345678, 0x9abcdef0);
-console.log(i.toString());  //
-console.log(i.toString(16));  // 123456789abcdef0
-console.log(i.toString(16, true);  // 0x123456789abcdef0
-```
+### Four arithmetic operations
 
 * add(int64) (+)
 ```js
@@ -55,6 +47,15 @@ let i1 = new Int64(0x12345678, 0x9abcdef0);
 let i2 = new Int64(0x11111111, 0x11111111);
 console.log(i1.sub(i2).toString(16, true));  // 0x123456789abcddf
 ```
+
+* mul(int64) (*)
+```js
+let i1 = new Int64(0x12345678, 0x9abcdef0);
+let i2 = new Int64(0x0, 0xf);
+console.log(i1.mul(i2).toString(16, true));  // 0x1111111111111010
+```
+
+### Bit operations
 
 * and(int64) (&)
 ```js
@@ -74,7 +75,6 @@ let i = new UInt64(0x12345678, 0x9abcdef0);
 console.log(i.xor(new UInt64(0xffffffff, 0xffffffff)).toString(16, true));  // 0xedcba9876543210f
 ```
 
-
 * shiftRight(number) (>>)
 ```js
 let i = new Int64(0x12345678, 0x9abcdef0);
@@ -85,6 +85,18 @@ console.log(i.toShiftRight(1).toString(16, true));  // 0x91a2b3c4d5e6f78
 ```js
 let i = new Int64(0x12345678, 0x9abcdef0);
 console.log(i.toShiftLeft(1).toString(16, true));  // 0x2468acf13579bde0
+```
+
+### Transform
+
+* toString(radix, prefix)
+default radix is 10
+default prefix is false
+```js
+let i = new Int64(0x12345678, 0x9abcdef0);
+console.log(i.toString());  //
+console.log(i.toString(16));  // 123456789abcdef0
+console.log(i.toString(16, true);  // 0x123456789abcdef0
 ```
 
 * toBuffer()
@@ -100,3 +112,12 @@ let ui = i.toUnsigned();
 console.log(ui);  // UInt64 { buffer: <Buffer 12 34 56 78 9a bc de f0> }
 console.log(ui.toSigned());  // Int64 { buffer: <Buffer 12 34 56 78 9a bc de f0> }
 ```
+
+* toMinus() (only Int64)
+```js
+let i = new Int64(0x12345678, 0x9abcdef0);
+console.log(i.toMinus());  // Int64 { buffer: <Buffer ed cb a9 87 65 43 21 10> }
+```
+
+## License
+[MIT](https://opensource.org/licenses/mit-license.php)
