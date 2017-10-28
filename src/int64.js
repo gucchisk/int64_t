@@ -98,6 +98,25 @@ class Int64Base {
     const xori = i.xor(UInt64.Max)
     return this.add(xori).add(new UInt64(0, 0x1))
   }
+
+  mul (i) {
+    const ibuf = i.toBuffer()
+    const high = ibuf.readUInt32BE()
+    const low = ibuf.readUInt32BE(4)
+
+    let num = this.constructor.Zero
+    for (let i = 0; i < 32; i++) {
+      if (low & (0x1 << i)) {
+	num = num.add(this.shiftLeft(i))
+      }
+    }
+    for (let i = 0; i < 32; i++) {
+      if (high & (0x1 << i)) {
+	num = num.add(this.shiftLeft(i + 32))
+      }
+    }
+    return num
+  }
 }
 
 export class Int64 extends Int64Base {
@@ -164,6 +183,10 @@ export class Int64 extends Int64Base {
 
   toUnsigned () {
     return new UInt64(this.toBuffer())
+  }
+
+  toMinus () {
+    return this.xor(UInt64.Max).add(new Int64(0x0, 0x1))
   }
 }
 

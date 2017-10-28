@@ -16,25 +16,28 @@ console.log(i.toString(16))
 console.log(i.toString(16, true))
 
 // add()
-console.log(i.add(new UInt64(0x11111111, 0x11111111)).toString(16, true))
+console.log('add:' + i.add(new UInt64(0x11111111, 0x11111111)).toString(16, true))
 
 // sub()
-console.log(i.sub(new UInt64(0x11111111, 0x11111111)).toString(16, true))
+console.log('sub:' + i.sub(new UInt64(0x11111111, 0x11111111)).toString(16, true))
+
+// mul()
+console.log('mul:' + i.mul(new UInt64(0x0, 0xf)).toString(16, true))
 
 // and()
-console.log(i.add(new UInt64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true))
+console.log('and:' + i.add(new UInt64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true))
 
 // or()
-console.log(i.or(new UInt64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true))
+console.log('or:' + i.or(new UInt64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true))
 
 // xor()
-console.log(i.xor(new UInt64(0xffffffff, 0xffffffff)).toString(16, true))
+console.log('xor:' + i.xor(new UInt64(0xffffffff, 0xffffffff)).toString(16, true))
 
 // shiftRight()
-console.log(i.shiftRight(1).toString(16, true))
+console.log('shiftRight:' + i.shiftRight(1).toString(16, true))
 
 // shiftLeft()
-console.log(i.shiftLeft(1).toString(16, true))
+console.log('shiftLeft:' + i.shiftLeft(1).toString(16, true))
 
 // toBuffer()
 console.log(i.toBuffer())
@@ -45,3 +48,6 @@ console.log(si)
 
 // toUnsigned()
 console.log(si.toUnsigned())
+
+// toMinus()
+console.log(si.toMinus())
