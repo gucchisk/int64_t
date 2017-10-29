@@ -9,10 +9,22 @@ class Int64Base {
       this.buffer = first
       return
     }
-    // new Int64(Number, Number)
-    if (typeof first === 'number' && typeof second === 'number') {
-      this.buffer = int32PairToBuffer(first, second)
-      return
+    if (typeof first === 'number') {
+      // new Int64(Number)
+      if (second === undefined) {
+	if (!Number.isSafeInteger(first)) {
+	  throw new Error(`Unsafe integer`)
+	}
+	const high = first / 0x100000000
+	const low = first & 0xffffffff
+	this.buffer = int32PairToBuffer(high, low)
+	return
+      }
+      // new Int64(Number, Number)
+      if (typeof second === 'number') {
+	this.buffer = int32PairToBuffer(first, second)
+	return
+      }
     }
     throw new Error(`Invalid arguments`)
   }
