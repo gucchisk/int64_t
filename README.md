@@ -30,6 +30,12 @@ let i = new Int64(Buffer.from([
 let i = new Int64(0x12345678, 0x9abcdef0);
 ```
 
+* new Int64(int)
+```js
+let i = new Int64(0x123456789)
+```
+　:warning: up to 2^53 - 1
+
 ## Feature
 
 ### Four arithmetic operations
