@@ -2,16 +2,28 @@ const { Int64, UInt64 } = require('../src/int64')
 
 describe('Int64', () => {
   describe('constructor', () => {
-    test('success', () => {
+    test('success Buffer', () => {
       expect(() => {
 	let buf = Buffer.from([0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00])
 	new Int64(buf)
       }).not.toThrow()
+    })
+    test('success high & low int', () => {
       expect(() => {
 	new Int64(0x80800000, 0x80800000)
       }).not.toThrow()
     })
-    test('error', () => {
+    test('success int', () => {
+      let i
+      expect(() => {
+	i = new Int64(Number.MAX_SAFE_INTEGER)
+      }).not.toThrow()
+      expect(i).toEqual(new Int64(0x001fffff, 0xffffffff))
+      expect(() => {
+	new Int64(0x123456789)
+      }).not.toThrow()
+    })
+    test('error Buffer length', () => {
       expect(() => {
 	new Int64(Buffer.from([0x80]))
       }).toThrow(/Buffer length must be 8/)
@@ -19,8 +31,16 @@ describe('Int64', () => {
 	let buf = Buffer.from([0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00])
 	new Int64(buf)
       }).toThrow(/Buffer length must be 8/)
+    })
+    test('error unsafe int', () => {
+      let i
       expect(() => {
-	new Int64(0x8080000080800000)
+	i = new Int64(0x0020000000000000)
+      }).toThrow('Unsafe integer')
+    })
+    test('error invalid arguments', () => {
+      expect(() => {
+	new Int64('hello')
       }).toThrow('Invalid arguments')
     })
   })
@@ -265,7 +285,7 @@ describe('Int64', () => {
   describe('mul', () => {
     test('mul', () => {
       const i = new Int64(0x12345678, 0x9abcdef0)
-      const muli = i.mul(new Int64(0, 2))
+      const muli = i.mul(new Int64(2))
       expect(muli).toEqual(new Int64(0x2468acf1, 0x3579bde0))
       expect(muli).toBeInstanceOf(Int64)
     })
