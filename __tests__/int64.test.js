@@ -180,6 +180,77 @@ describe('Int64', () => {
       expect(i.shiftRight(64)).toEqual(i)
     })
   })
+  describe('shiftRight logical', () => {
+    test('low', () => {
+      const i = new Int64(0x0, 0x80402010)
+      expect(i.shiftRight(2, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x20, 0x10, 0x08, 0x04
+      ])))
+      expect(i.shiftRight(30)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02
+      ])))
+      expect(i.shiftRight(32)).toEqual(Int64.Zero)
+      expect(i.shiftRight(34)).toEqual(Int64.Zero)
+      expect(i.shiftLeft(63)).toEqual(Int64.Zero)
+      expect(i.shiftLeft(64)).toEqual(Int64.Zero)
+    })
+    test('high', () => {
+      const i = new Int64(0x08040201, 0x0)
+      expect(i.shiftRight(2, true)).toEqual(new Int64(Buffer.from([
+	0x02, 0x01, 0x00, 0x80, 0x40, 0x00, 0x00, 0x00
+      ])))
+      expect(i.shiftRight(30)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x20, 0x10, 0x08, 0x04
+      ])))
+      expect(i.shiftRight(32, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x08, 0x04, 0x02, 0x01
+      ])))
+      expect(i.shiftRight(34, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x02, 0x01, 0x00, 0x80
+      ])))
+      expect(i.shiftRight(60, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+      ])))
+    })
+    test('high minus', () => {
+      const i = new Int64(0x80402010, 0x0)
+      expect(i.shiftRight(2, true)).toEqual(new Int64(Buffer.from([
+	0x20, 0x10, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00
+      ])))
+      expect(i.shiftRight(30, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x02, 0x01, 0x00, 0x80, 0x40
+      ])))
+      expect(i.shiftRight(32, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x80, 0x40, 0x20, 0x10
+      ])))
+      expect(i.shiftRight(34, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x20, 0x10, 0x08, 0x04
+      ])))
+      expect(i.shiftRight(63, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
+      ])))
+      expect(i.shiftRight(64, true)).toEqual(i)
+    })
+    test('normal minus', () => {
+      const i = new Int64(0x80402010, 0x80402010)
+      expect(i.shiftRight(2, true)).toEqual(new Int64(Buffer.from([
+	0x20, 0x10, 0x08, 0x04, 0x20, 0x10, 0x08, 0x04
+      ])))
+      expect(i.shiftRight(30, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x02, 0x01, 0x00, 0x80, 0x42
+      ])))
+      expect(i.shiftRight(32, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x80, 0x40, 0x20, 0x10
+      ])))
+      expect(i.shiftRight(34, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x20, 0x10, 0x08, 0x04
+      ])))
+      expect(i.shiftRight(63, true)).toEqual(new Int64(Buffer.from([
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01
+      ])))
+      expect(i.shiftRight(64, true)).toEqual(i)
+    })
+  })
   describe('toString', () => {
     test('toString -1', () => {
       let i = new Int64(0xffffffff, 0xffffffff)
