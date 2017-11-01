@@ -136,24 +136,34 @@ export class Int64 extends Int64Base {
     super(first, second)
   }
     
-  shiftRight (num) {
+  shiftRight (num, logical) {
     let buf = Buffer.alloc(8)
     let high = this.buffer.readInt32BE()
     let low = this.buffer.readInt32BE(4)
     num %= 64
     if (num >= 32) {
-      let value = high >> (num - 32)
+      let value
+      if (logical) {
+	value = high >>> (num - 32)
+      } else {
+	value = high >> (num - 32)
+      }
       const int32Buf = int32ToBuffer(value)
       for (let i = 0; i < 4; i++) {
 	buf[4 + i] = int32Buf[i]
       }
-      if ((high & 0x80000000) !== 0) {
+      if (!logical && (high & 0x80000000) !== 0) {
 	for (let i = 0; i < 4; i++) {
 	  buf[i] = 0xff
 	}
       }
     } else {
-      let shifted_high = high >> num
+      let shifted_high
+      if (logical) {
+	shifted_high = high >>> num
+      } else {
+	shifted_high = high >> num
+      }
       let shifted_low = ((high & shiftMaskLow(num)) << (32 - num)) + (low >>> num)
       buf = int32PairToBuffer(shifted_high, shifted_low)
     }

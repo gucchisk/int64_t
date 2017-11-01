@@ -34,7 +34,11 @@ console.log('or:' + i.or(new UInt64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true))
 console.log('xor:' + i.xor(new UInt64(0xffffffff, 0xffffffff)).toString(16, true))
 
 // shiftRight()
-console.log('shiftRight:' + i.shiftRight(1).toString(16, true))
+{
+  let i = new Int64(0x89abcdef, 0x01234567)
+  console.log('shiftRight:' + i.shiftRight(1).toString(16, true))
+  console.log('shiftRight(logical):' + i.shiftRight(1, true).toString(16, true))
+}
 
 // shiftLeft()
 console.log('shiftLeft:' + i.shiftLeft(1).toString(16, true))

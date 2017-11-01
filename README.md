@@ -81,10 +81,11 @@ let i = new UInt64(0x12345678, 0x9abcdef0);
 console.log(i.xor(new UInt64(0xffffffff, 0xffffffff)).toString(16, true));  // 0xedcba9876543210f
 ```
 
-* shiftRight(number) (>>)
+* shiftRight(number, logical) (>>, >>>)
 ```js
-let i = new Int64(0x12345678, 0x9abcdef0);
-console.log(i.toShiftRight(1).toString(16, true));  // 0x91a2b3c4d5e6f78
+let i = new Int64(0x89abcdef, 0x01234567);
+console.log(i.toShiftRight(1).toString(16, true));  // -0x3b2a19087f6e5d4d
+console.log(i.toShiftRight(1, true).toString(16, true));  // 0x44d5e6f78091a2b3
 ```
 
 * shiftLeft(number) (<<)
