@@ -120,10 +120,10 @@ console.log(ui);  // UInt64 { buffer: <Buffer 12 34 56 78 9a bc de f0> }
 console.log(ui.toSigned());  // Int64 { buffer: <Buffer 12 34 56 78 9a bc de f0> }
 ```
 
-* toMinus() (only Int64)
+* toNegative() (only Int64)
 ```js
 let i = new Int64(0x12345678, 0x9abcdef0);
-console.log(i.toMinus());  // Int64 { buffer: <Buffer ed cb a9 87 65 43 21 10> }
+console.log(i.toNegative());  // Int64 { buffer: <Buffer ed cb a9 87 65 43 21 10> }
 ```
 
 ## License
