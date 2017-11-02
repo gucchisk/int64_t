@@ -141,7 +141,7 @@ describe('Int64', () => {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
       ])))
     })
-    test('high minus', () => {
+    test('high negative', () => {
       const i = new Int64(0x80402010, 0x0)
       expect(i.shiftRight(2)).toEqual(new Int64(Buffer.from([
 	0xe0, 0x10, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00
@@ -160,7 +160,7 @@ describe('Int64', () => {
       ])))
       expect(i.shiftRight(64)).toEqual(i)
     })
-    test('normal minus', () => {
+    test('normal negative', () => {
       const i = new Int64(0x80402010, 0x80402010)
       expect(i.shiftRight(2)).toEqual(new Int64(Buffer.from([
 	0xe0, 0x10, 0x08, 0x04, 0x20, 0x10, 0x08, 0x04
@@ -212,7 +212,7 @@ describe('Int64', () => {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
       ])))
     })
-    test('high minus', () => {
+    test('high negative', () => {
       const i = new Int64(0x80402010, 0x0)
       expect(i.shiftRight(2, true)).toEqual(new Int64(Buffer.from([
 	0x20, 0x10, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00
@@ -231,7 +231,7 @@ describe('Int64', () => {
       ])))
       expect(i.shiftRight(64, true)).toEqual(i)
     })
-    test('normal minus', () => {
+    test('normal negative', () => {
       const i = new Int64(0x80402010, 0x80402010)
       expect(i.shiftRight(2, true)).toEqual(new Int64(Buffer.from([
 	0x20, 0x10, 0x08, 0x04, 0x20, 0x10, 0x08, 0x04
@@ -368,32 +368,32 @@ describe('Int64', () => {
       const i = new Int64(0x12345678, 0x9abcdef0)
       expect(i.mul(new Int64(0x12345678, 0x9abcdef0))).toEqual(new Int64(0xa5e20890, 0xf2a52100))
     })
-    test('mul minus', () => {
+    test('mul negative', () => {
       const i = new Int64(0x12345678, 0x9abcdef0)
       expect(i.mul(new Int64(0xffffffff, 0xfffffffe))).toEqual(new Int64(0xdb97530e, 0xca864220))
     })
-    test('mul low int minus', () => {
+    test('mul low int negative', () => {
       const i = new Int64(0x12345678, 0x9abcdef0)
-      expect(i.mul(new Int64(0x0, 0x12345678).toMinus())).toEqual(new Int64(0xd70a3d71, 0xdbd2df80))
+      expect(i.mul(new Int64(0x0, 0x12345678).toNegative())).toEqual(new Int64(0xd70a3d71, 0xdbd2df80))
     })
-    test('mul int64 minus', () => {
+    test('mul int64 negative', () => {
       const i = new Int64(0x12345678, 0x9abcdef0)
-      expect(i.mul(i.toMinus())).toEqual(new Int64(0x5a1df76f, 0x0d5adf00))
+      expect(i.mul(i.toNegative())).toEqual(new Int64(0x5a1df76f, 0x0d5adf00))
     })
   })
-  describe('toMinus', () => {
-    test('toMinus', () => {
+  describe('toNegative', () => {
+    test('toNegative', () => {
       let i = new Int64(0x0, 0x1)
-      expect(i.toMinus()).toEqual(new Int64(0xffffffff, 0xffffffff))
+      expect(i.toNegative()).toEqual(new Int64(0xffffffff, 0xffffffff))
       i = new Int64(0x12345678, 0x9abcdef0)
-      expect(i.toMinus()).toEqual(new Int64(0xedcba987, 0x65432110))
+      expect(i.toNegative()).toEqual(new Int64(0xedcba987, 0x65432110))
     })
   })
 })
 
 describe('UInt64', () => {
   describe('shiftRight', () => {
-    test('high minus', () => {
+    test('high negative', () => {
       const i = new UInt64(0x80402010, 0x0)
       expect(i.shiftRight(2)).toEqual(new UInt64(Buffer.from([
 	0x20, 0x10, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00

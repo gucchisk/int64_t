@@ -207,7 +207,7 @@ export class Int64 extends Int64Base {
     return new UInt64(this.toBuffer())
   }
 
-  toMinus () {
+  toNegative () {
     return this.xor(UInt64.Max).add(new Int64(0x0, 0x1))
   }
 }
