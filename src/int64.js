@@ -107,8 +107,7 @@ class Int64Base {
   }
 
   sub (i) {
-    const xori = i.xor(UInt64.Max)
-    return this.add(xori).add(new UInt64(0, 0x1))
+    return this.add(i.twosComplement())
   }
 
   mul (i) {
@@ -128,6 +127,10 @@ class Int64Base {
       }
     }
     return num
+  }
+
+  twosComplement () {
+    return this.xor(UInt64.Max).add(new UInt64(0, 1))
   }
 }
 
