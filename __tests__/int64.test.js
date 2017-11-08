@@ -389,6 +389,14 @@ describe('Int64', () => {
       expect(i.toNegative()).toEqual(new Int64(0xedcba987, 0x65432110))
     })
   })
+  describe('twosComplement', () => {
+    test('success', () => {
+      let i = new Int64(0x12345678, 0x9abcdef0)
+      expect(i.twosComplement()).toEqual(new UInt64(0xedcba987, 0x65432110))
+      i = new UInt64(0x80402010, 0x0)
+      expect(i.twosComplement()).toEqual(new UInt64(0x7fbfdff0, 0x0))
+    })
+  })
 })
 
 describe('UInt64', () => {
