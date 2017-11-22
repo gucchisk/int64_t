@@ -43,6 +43,11 @@ console.log('xor:' + i.xor(new UInt64(0xffffffff, 0xffffffff)).toString(16, true
 // shiftLeft()
 console.log('shiftLeft:' + i.shiftLeft(1).toString(16, true))
 
+// compare()
+console.log('compare:' + i.compare(new UInt64(0x12345678, 0x0)))
+console.log('compare:' + i.compare(new UInt64(0x20000000, 0x0)))
+console.log('compare:' + i.compare(new UInt64(0x12345678, 0x9abcdef0)))
+
 // toBuffer()
 console.log(i.toBuffer())
 
@@ -53,5 +58,5 @@ console.log(si)
 // toUnsigned()
 console.log(si.toUnsigned())
 
-// toMinus()
-console.log(si.toMinus())
+// toNegative()
+console.log(si.toNegative())

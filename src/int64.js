@@ -173,6 +173,29 @@ export class Int64 extends Int64Base {
     return new Int64(buf)
   }
 
+  compare (i) {
+    if (i.constructor.name === 'UInt64') {
+      return this.toUnsigned().compare(i)
+    }
+    let high = this.buffer.readInt32BE()
+    let low = this.buffer.readUInt32BE(4)
+    let iHigh = i.toBuffer().readInt32BE()
+    let iLow = i.toBuffer().readUInt32BE(4)
+    if (high === iHigh) {
+      if (low === iLow) {
+	return 0
+      }
+      if (low > iLow) {
+	return 1
+      }
+      return -1
+    }
+    if (high > iHigh) {
+      return 1
+    }
+    return -1
+  }
+
   toString (radix, prefix) {
     if (radix === undefined) {
       radix = 10
@@ -237,6 +260,26 @@ export class UInt64 extends Int64Base {
       buf = int32PairToBuffer(shifted_high, shifted_low)
     }
     return new Int64(buf)
+  }
+
+  compare (i) {
+    let high = this.buffer.readUInt32BE()
+    let low = this.buffer.readUInt32BE(4)
+    let iHigh = i.toBuffer().readUInt32BE()
+    let iLow = i.toBuffer().readUInt32BE(4)
+    if (high === iHigh) {
+      if (low === iLow) {
+	return 0
+      }
+      if (low > iLow) {
+	return 1
+      }
+      return -1
+    }
+    if (high > iHigh) {
+      return 1
+    }
+    return -1
   }
   
   toString (radix, prefix) {

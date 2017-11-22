@@ -94,6 +94,15 @@ let i = new Int64(0x12345678, 0x9abcdef0);
 console.log(i.toShiftLeft(1).toString(16, true));  // 0x2468acf13579bde0
 ```
 
+### Other operation
+* compare(i)
+```
+let i = new UInt64(0x12345678, 0x9abcdef0);
+console.log(i.compare(new UInt64(0x12345678, 0x0)));  // 1
+console.log(i.compare(new UInt64(0x20000000, 0x0)));  // -1
+console.log(i.compare(new UInt64(0x12345678, 0x9abcdef0)));  // 0
+```
+
 ### Transform
 
 * toString(radix, prefix)
