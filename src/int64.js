@@ -155,6 +155,36 @@ class Int64Base {
   twosComplement () {
     return this.xor(UInt64.Max).add(new UInt64(0, 1))
   }
+
+  topBitPosition () {
+    let high = this.buffer.readUInt32BE()
+    let low = this.buffer.readUInt32BE(4)
+    if (high > 0) {
+      let pos = 32
+      while (pos > 1) {
+	if (high & (1 << (pos - 1))) {
+	  break
+	}
+	pos--
+      }
+      if (pos != 0) {
+	return pos + 32
+      }
+    }
+    if (low > 0) {
+      let pos = 32
+      while (pos > 1) {
+	if (low & (1 << (pos - 1))) {
+	  break
+	}
+	pos--
+      }
+      if (pos != 0) {
+	return pos
+      }
+    }
+    return 0
+  }
 }
 
 export class Int64 extends Int64Base {

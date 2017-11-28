@@ -516,6 +516,7 @@ describe('Int64', () => {
       expect(i.compare(new UInt64(0x0, 0x1))).toEqual(-1)
     })
   })
+
   describe('isNegative', () => {
     test('positive', () => {
       let i = new Int64(0x0, 0x1)
@@ -530,6 +531,25 @@ describe('Int64', () => {
       expect(i.isNegative()).toEqual(true)
       i = new Int64(0xffffffff, 0xffffffff)
       expect(i.isNegative()).toEqual(true)
+    })
+  })
+
+  describe('topBitPosition', () => {
+    test('normal', () => {
+      let i = new Int64(0x12345678, 0x9abcdef0)
+      expect(i.topBitPosition()).toEqual(61)
+    })
+    test('high', () => {
+      let i = new Int64(0x80000000, 0x0)
+      expect(i.topBitPosition()).toEqual(64)
+      i = new Int64(0x01000000, 0x0)
+      expect(i.topBitPosition()).toEqual(57)
+    })
+    test('low', () => {
+      let i = new Int64(0x0, 0x80000000)
+      expect(i.topBitPosition()).toEqual(32)
+      i = new Int64(0x0, 0x01000000)
+      expect(i.topBitPosition()).toEqual(25)
     })
   })
 })
