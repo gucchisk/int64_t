@@ -15,8 +15,19 @@ class Int64Base {
 	if (!Number.isSafeInteger(first)) {
 	  throw new Error(`Unsafe integer`)
 	}
-	const high = first / 0x100000000
-	const low = first & 0xffffffff
+	let high = 0, low = 0
+	if (first >= 0) {
+	  high = first / 0x100000000
+	  low = first & 0xffffffff
+	} else {
+	  if (-first <= 0xffffffff) {
+	    high = 0xffffffff
+	    low = first & 0xffffffff
+	  } else {
+	    high = 0xffffffff - (((-first) / 0x100000000) >>> 0)
+	    low = 0x100000000 - ((-first) & 0xffffffff)
+	  }
+	}
 	this.buffer = int32PairToBuffer(high, low)
 	return
       }
