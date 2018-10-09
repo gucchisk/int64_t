@@ -16,12 +16,25 @@ describe('Int64', () => {
     test('success int', () => {
       let i
       expect(() => {
-	i = new Int64(Number.MAX_SAFE_INTEGER)
+        i = new Int64(1)
+      }).not.toThrow()
+      expect(i).toEqual(new Int64(0x0, 0x1))
+      expect(() => {
+        i = new Int64(0x123456789)
+      }).not.toThrow()
+      expect(i).toEqual(new Int64(0x1, 0x23456789))
+      expect(() => {
+        i = new Int64(Number.MAX_SAFE_INTEGER)
       }).not.toThrow()
       expect(i).toEqual(new Int64(0x001fffff, 0xffffffff))
       expect(() => {
-	new Int64(0x123456789)
+        i = new Int64(Number.MIN_SAFE_INTEGER)
       }).not.toThrow()
+      expect(i).toEqual(new Int64(0xffe00000, 0x1))
+      expect(() => {
+        i = new Int64(-1)
+      }).not.toThrow()
+      expect(i).toEqual(new Int64(0xffffffff, 0xffffffff))
     })
     test('error Buffer length', () => {
       expect(() => {
