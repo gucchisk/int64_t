@@ -421,6 +421,41 @@ describe('Int64', () => {
       expect(i.mul(i.toNegative())).toEqual(new Int64(0x5a1df76f, 0x0d5adf00))
     })
   })
+  describe('div', () => {
+    test('div divisor < dividend', () => {
+      const i = new Int64(0x12345678, 0x9abcdef0)
+      let divi = i.div(new Int64(0x0, 0x2))
+      expect(divi).toBeInstanceOf(Int64)
+      expect(divi).toEqual(i.shiftRight(1))
+      divi = i.div(new Int64(0x0, 0x20))
+      expect(divi).toBeInstanceOf(Int64)
+      expect(divi).toEqual(i.shiftRight(5))
+      divi = i.div(new Int64(0x10000000, 0x0))
+      expect(divi).toBeInstanceOf(Int64)
+      expect(divi).toEqual(new Int64(0x1))
+    })
+    test('div divisor > dividend', () => {
+      const i = new Int64(0x12345678, 0x9abcdef0)
+      const divi = i.div(new Int64(0x20000000, 0x0))
+      expect(divi).toBeInstanceOf(Int64)
+      expect(divi).toEqual(new Int64(0x0))
+    })
+    test('div divisor == dividend', () => {
+      const i = new Int64(0x12345678, 0x9abcdef0)
+      const divi = i.div(i)
+      expect(divi).toBeInstanceOf(Int64)
+      expect(divi).toEqual(new Int64(0x1))
+    })
+    // test('div negative divisor', () => {
+    //   const i = new Int64(0x12345678, 0x9abcdef0)
+    //   let divi = i.div(new Int64(0xffffffff, 0xfffffffe))
+    //   expect(divi).toBeInstanceOf(Int64)
+    //   expect(divi).toEqual(i.twosComplement().shiftRight(1, true))
+    //   // divi = i.div(new Int64(0xffffffff, 0x0))
+    //   // expect(divi).toBeInstanceOf(Int64)
+    //   // expect(divi).toEqual(new Int64(0xffffffff, 0xedcba988))
+    // })
+  })
   describe('toNegative', () => {
     test('toNegative', () => {
       let i = new Int64(0x0, 0x1)
@@ -435,6 +470,9 @@ describe('Int64', () => {
       expect(i.twosComplement()).toEqual(new UInt64(0xedcba987, 0x65432110))
       i = new UInt64(0x80402010, 0x0)
       expect(i.twosComplement()).toEqual(new UInt64(0x7fbfdff0, 0x0))
+      i = new Int64(0xffffffff, 0xffffffff)
+      console.log(i)
+      expect(i.twosComplement()).toEqual(new Int64(1))
     })
   })
   describe('compare', () => {
@@ -698,6 +736,32 @@ describe('UInt64', () => {
     test('mul int64', () => {
       const i = new UInt64(0x12345678, 0x9abcdef0)
       expect(i.mul(new UInt64(0x12345678, 0x9abcdef0))).toEqual(new UInt64(0xa5e20890, 0xf2a52100))
+    })
+  })
+  describe('div', () => {
+    test('div divisor < dividend', () => {
+      const i = new UInt64(0x12345678, 0x9abcdef0)
+      let divi = i.div(new UInt64(0x0, 0x2))
+      expect(divi).toBeInstanceOf(UInt64)
+      expect(divi).toEqual(i.shiftRight(1))
+      divi = i.div(new UInt64(0x0, 0x20))
+      expect(divi).toBeInstanceOf(UInt64)
+      expect(divi).toEqual(i.shiftRight(5))
+      divi = i.div(new UInt64(0x10000000, 0x0))
+      expect(divi).toBeInstanceOf(UInt64)
+      expect(divi).toEqual(new UInt64(0x1))
+    })
+    test('div divisor > dividend', () => {
+      const i = new UInt64(0x12345678, 0x9abcdef0)
+      const divi = i.div(new UInt64(0x20000000, 0x0))
+      expect(divi).toBeInstanceOf(UInt64)
+      expect(divi).toEqual(new UInt64(0x0))
+    })
+    test('div divisor == dividend', () => {
+      const i = new UInt64(0x12345678, 0x9abcdef0)
+      const divi = i.div(i)
+      expect(divi).toBeInstanceOf(UInt64)
+      expect(divi).toEqual(new UInt64(0x1))
     })
   })
   describe('compare', () => {
