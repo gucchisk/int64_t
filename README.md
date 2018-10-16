@@ -135,5 +135,11 @@ let i = new Int64(0x12345678, 0x9abcdef0);
 console.log(i.toNegative());  // Int64 { buffer: <Buffer ed cb a9 87 65 43 21 10> }
 ```
 
+* isNegative() (only Int64)
+```js
+let i = new Int64(0x890abcde, 0xf1234567)
+console.log(i.isNegative());  // bool: true
+```
+
 ## License
 [MIT](https://opensource.org/licenses/mit-license.php)
