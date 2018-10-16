@@ -60,3 +60,6 @@ console.log(si.toUnsigned())
 
 // toNegative()
 console.log(si.toNegative())
+
+// isNegative()
+console.log(new Int64(0x80000000, 0x0).isNegative())

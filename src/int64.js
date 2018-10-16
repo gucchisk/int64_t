@@ -240,12 +240,20 @@ export class Int64 extends Int64Base {
     return str
   }
 
+  /**
+   * Int64 only method
+   */
   toUnsigned () {
     return new UInt64(this.toBuffer())
   }
 
   toNegative () {
     return this.xor(UInt64.Max).add(new Int64(0x0, 0x1))
+  }
+
+  isNegative () {
+    const high = this.buffer.readUInt32BE()
+    return (high & 0x80000000) !== 0
   }
 }
 

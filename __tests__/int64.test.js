@@ -489,6 +489,22 @@ describe('Int64', () => {
       expect(i.compare(new UInt64(0x0, 0x1))).toEqual(-1)
     })
   })
+  describe('isNegative', () => {
+    test('positive', () => {
+      let i = new Int64(0x0, 0x1)
+      expect(i.isNegative()).toEqual(false)
+      i = new Int64(0x7fffffff, 0xffffffff)
+      expect(i.isNegative()).toEqual(false)
+      i = new Int64(0x12345678, 0x9abcdef0)
+      expect(i.isNegative()).toEqual(false)
+    })
+    test('negative', () => {
+      let i = new Int64(0x80000000, 0x0)
+      expect(i.isNegative()).toEqual(true)
+      i = new Int64(0xffffffff, 0xffffffff)
+      expect(i.isNegative()).toEqual(true)
+    })
+  })
 })
 
 describe('UInt64', () => {
@@ -671,6 +687,26 @@ describe('UInt64', () => {
       expect(i.compare(new Int64(0xffffffff, 0xffffffff))).toEqual(-1)
       expect(i.compare(new Int64(0x80000000, 0x0))).toEqual(-1)
       expect(UInt64.Zero.compare(new UInt64(0x0, 0x1))).toEqual(-1)
+    })
+  })
+  describe('toNegative', () => {
+    test('undefined', () => {
+      let ui = new UInt64(0x0, 0x1)
+      expect(ui.toNegative).toBeUndefined()
+      ui = new UInt64(0x80000000, 0x0)
+      expect(ui.toNegative).toBeUndefined()
+      ui = new UInt64(0x87654321, 0x9abcdef0)
+      expect(ui.toNegative).toBeUndefined()
+    })
+  })
+  describe('isNegative', () => {
+    test('UInt64', () => {
+      let ui = new UInt64(0x0, 0x1)
+      expect(ui.isNegative).toBeUndefined()
+      ui = new UInt64(0x80000000, 0x0)
+      expect(ui.isNegative).toBeUndefined()
+      ui = new UInt64(0x87654321, 0x9abcdef0)
+      expect(ui.isNegative).toBeUndefined()
     })
   })
 })
