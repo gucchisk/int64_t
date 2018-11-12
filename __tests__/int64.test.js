@@ -1,7 +1,7 @@
 const { Int64, UInt64 } = require('../src/int64')
 
 describe('Int64', () => {
-  describe('constructor', () => {
+  describe('Int64 constructor', () => {
     test('success Buffer', () => {
       expect(() => {
 	let buf = Buffer.from([0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00])
@@ -85,7 +85,7 @@ describe('Int64', () => {
     })
   })
 
-  describe('and', () => {
+  describe('Int64 and', () => {
     test('success', () => {
       const i = new Int64(0x80800000, 0x80800000)
       expect(i.and(UInt64.Max)).toEqual(i)
@@ -94,7 +94,7 @@ describe('Int64', () => {
     })
   })
 
-  describe('or', () => {
+  describe('Int64 or', () => {
     test('success', () => {
       const i = new Int64(0x80800000, 0x80800000)
       expect(i.or(UInt64.Max)).toEqual(UInt64.Max)
@@ -103,7 +103,7 @@ describe('Int64', () => {
     })
   })
 
-  describe('xor', () => {
+  describe('Int64 xor', () => {
     test('success', () => {
       const i = new Int64(0x80800000, 0x80800000)
       expect(i.xor(UInt64.Max)).toEqual(new Int64(0x7f7fffff, 0x7f7fffff))
@@ -112,7 +112,7 @@ describe('Int64', () => {
     })
   })
 
-  describe('shiftLeft', () => {
+  describe('Int64 shiftLeft', () => {
     test('low', () => {
       const i = new Int64(0x0, 0x80402010)
       expect(i.shiftLeft(2)).toEqual(new Int64(Buffer.from([
@@ -149,7 +149,7 @@ describe('Int64', () => {
     })
   })
 
-  describe('shiftRight', () => {
+  describe('Int64 shiftRight', () => {
     test('low', () => {
       const i = new Int64(0x0, 0x80402010)
       expect(i.shiftRight(2)).toEqual(new Int64(Buffer.from([
@@ -220,7 +220,7 @@ describe('Int64', () => {
       expect(i.shiftRight(64)).toEqual(i)
     })
   })
-  describe('shiftRight logical', () => {
+  describe('Int64 shiftRight logical', () => {
     test('low', () => {
       const i = new Int64(0x0, 0x80402010)
       expect(i.shiftRight(2, true)).toEqual(new Int64(Buffer.from([
@@ -291,7 +291,7 @@ describe('Int64', () => {
       expect(i.shiftRight(64, true)).toEqual(i)
     })
   })
-  describe('toString', () => {
+  describe('Int64 toString', () => {
     test('toString -1', () => {
       let i = new Int64(0xffffffff, 0xffffffff)
       expect(i.toString(2)).toEqual('-1')
@@ -314,7 +314,7 @@ describe('Int64', () => {
       expect(i.toString(16)).toEqual('7fffffffffffffff')
     })
   })
-  describe('toUnsigned', () => {
+  describe('Int64 toUnsigned', () => {
     test('toUnsigned', () => {
       const i = new Int64(0x80000000, 0)
       const ui = i.toUnsigned()
@@ -323,7 +323,7 @@ describe('Int64', () => {
       expect(ui.toString(16, true)).toEqual('0x8000000000000000')
     })
   })
-  describe('add', () => {
+  describe('Int64 add', () => {
     test('add', () => {
       const i1 = new Int64(0x11111111, 0x11111111)
       const i2 = new Int64(0x10101010, 0x01010101)
@@ -366,7 +366,7 @@ describe('Int64', () => {
       // }).toThrow('Cannot add Int64 to UInt64')
     })
   })
-  describe('sub', () => {
+  describe('Int64 sub', () => {
     test('sub', () => {
       const i1 = new Int64(0x11111111, 0x11111111)
       const i2 = new Int64(0x10101010, 0x01010101)
@@ -393,7 +393,7 @@ describe('Int64', () => {
       expect(i1.sub(i2)).toEqual(new Int64(0xfffffffe, 0xffffffff))
     })
   })
-  describe('mul', () => {
+  describe('Int64 mul', () => {
     test('mul', () => {
       const i = new Int64(0x12345678, 0x9abcdef0)
       const muli = i.mul(new Int64(2))
@@ -421,42 +421,131 @@ describe('Int64', () => {
       expect(i.mul(i.toNegative())).toEqual(new Int64(0x5a1df76f, 0x0d5adf00))
     })
   })
-  describe('div', () => {
-    test('div divisor < dividend', () => {
-      const i = new Int64(0x12345678, 0x9abcdef0)
-      let divi = i.div(new Int64(0x0, 0x2))
-      expect(divi).toBeInstanceOf(Int64)
-      expect(divi).toEqual(i.shiftRight(1))
-      divi = i.div(new Int64(0x0, 0x20))
-      expect(divi).toBeInstanceOf(Int64)
-      expect(divi).toEqual(i.shiftRight(5))
-      divi = i.div(new Int64(0x10000000, 0x0))
-      expect(divi).toBeInstanceOf(Int64)
-      expect(divi).toEqual(new Int64(0x1))
+  describe('Int64 div', () => {
+    describe('Int64 divisor', () => {
+      test('div divisor == dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const divi = i.div(i)
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(0x1))
+      })
+      test('div positive divisor < positive dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	let divi = i.div(new Int64(0x0, 0x2))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(i.shiftRight(1))
+	divi = i.div(new Int64(0x0, 0x20))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(i.shiftRight(5))
+	divi = i.div(new Int64(0x10000000, 0x0))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(0x1))
+      })
+      test('div positive divisor > positive dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const divi = i.div(new Int64(0x20000000, 0x0))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(0x0))
+      })
+      test('div negative divisor < positive dividend (abs)', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	let divi = i.div(new Int64(0xffffffff, 0xfffffffe))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(i.shiftRight(1, true).twosComplement())
+	divi = i.div(new Int64(0xffffffff, 0x0))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(0xffffffff, 0xedcba988))
+      })
+      test('div negative divisor > positive dividend (abs)', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	let divi = i.div(new Int64(0x80000000, 0xf0000000))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(0x0))
+      })
+      test('div negative divisor == positive dividend (abs)', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const divi = i.div(new Int64(0xedcba987, 0x65432110))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(-1))
+      })
+      test('div positive divisor < negative dividend (abs)', () => {
+	const i = new Int64(0x80000000, 0x0)
+	const divi = i.div(new Int64(2))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(i.twosComplement().shiftRight(1, true).toNegative())
+      })
+      test('div positive divisor > negative dividend (abs)', () => {
+	const i = new Int64(0xf0000000, 0x0)
+	const divi = i.div(new Int64(0x12345678, 0x9abcdef0))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(0x0))
+      })
+      test('div positive divisor == negative dividend (abs)', () => {
+	const i = new Int64(0xffffffff, 0xffffffff)
+	const divi = i.div(new Int64(1))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(-1))
+      })
+      test('div negative divisor < negative dividend (abs)', () => {
+	const i = new Int64(0x80000000, 0x0)
+	const divi = i.div(new Int64(-2))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(0x40000000, 0x0))
+      })
+      test('div negative divisor > negative dividend (abs)', () => {
+	const i = new Int64(0xf0000000, 0x0)
+	const divi = i.div(new Int64(0x80000000, 0x0))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(0x0))
+      })
     })
-    test('div divisor > dividend', () => {
-      const i = new Int64(0x12345678, 0x9abcdef0)
-      const divi = i.div(new Int64(0x20000000, 0x0))
-      expect(divi).toBeInstanceOf(Int64)
-      expect(divi).toEqual(new Int64(0x0))
+    describe('UInt64 divisor', () => {
+      test('div divisor == dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const divi = i.div(new UInt64(0x12345678, 0x9abcdef0))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(1))
+      })
+      test('div positive divisor < positive dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const divi = i.div(new UInt64(0x2))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(0x12345678, 0x9abcdef0).shiftRight(1))
+      })
+      test('div positive divisor > positive dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const divi = i.div(new UInt64(0x80000000, 0x0))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(0x0))
+      })
+      test('div positive divisor < negative dividend (abs)', () => {
+	const i = new Int64(0x80000000, 0x12345678)
+	const divi = i.div(new UInt64(0x2))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(0x80000000, 0x12345678).shiftRight(1))
+      })
+      test('div positive divisor > negative dividend (abs)', () => {
+	let i = new Int64(0xf0000000, 0x12345678)
+	let divi = i.div(new UInt64(0x12345678, 0x9abcdef0))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(13))
+      })
+      test('div positive divisor > negative dividend (unsigned)', () => {
+	const i = new Int64(0x80000000, 0x12345678)
+	const divi = i.div(new UInt64(0x80000001, 0x12345678))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(UInt64.Zero)
+      })
+
+      test('div positive divisor == negative dividend (abs)', () => {
+	const i = new Int64(0xedcba987, 0x65432110)
+	const divi = i.div(new UInt64(0x12345678, 0x9abcdef0))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(13))
+      })
     })
-    test('div divisor == dividend', () => {
-      const i = new Int64(0x12345678, 0x9abcdef0)
-      const divi = i.div(i)
-      expect(divi).toBeInstanceOf(Int64)
-      expect(divi).toEqual(new Int64(0x1))
-    })
-    // test('div negative divisor', () => {
-    //   const i = new Int64(0x12345678, 0x9abcdef0)
-    //   let divi = i.div(new Int64(0xffffffff, 0xfffffffe))
-    //   expect(divi).toBeInstanceOf(Int64)
-    //   expect(divi).toEqual(i.twosComplement().shiftRight(1, true))
-    //   // divi = i.div(new Int64(0xffffffff, 0x0))
-    //   // expect(divi).toBeInstanceOf(Int64)
-    //   // expect(divi).toEqual(new Int64(0xffffffff, 0xedcba988))
-    // })
   })
-  describe('toNegative', () => {
+  describe('Int64 toNegative', () => {
     test('toNegative', () => {
       let i = new Int64(0x0, 0x1)
       expect(i.toNegative()).toEqual(new Int64(0xffffffff, 0xffffffff))
@@ -464,18 +553,19 @@ describe('Int64', () => {
       expect(i.toNegative()).toEqual(new Int64(0xedcba987, 0x65432110))
     })
   })
-  describe('twosComplement', () => {
+  describe('Int64 twosComplement', () => {
     test('success', () => {
       let i = new Int64(0x12345678, 0x9abcdef0)
       expect(i.twosComplement()).toEqual(new UInt64(0xedcba987, 0x65432110))
       i = new UInt64(0x80402010, 0x0)
       expect(i.twosComplement()).toEqual(new UInt64(0x7fbfdff0, 0x0))
-      i = new Int64(0xffffffff, 0xffffffff)
-      console.log(i)
+      i = new Int64(-1)
       expect(i.twosComplement()).toEqual(new Int64(1))
+      i = new Int64(Number.MIN_SAFE_INTEGER)
+      expect(i.twosComplement()).toEqual(new Int64(Number.MAX_SAFE_INTEGER))
     })
   })
-  describe('compare', () => {
+  describe('Int64 compare', () => {
     test('equal', () => {
       let i = new Int64(0x12345678, 0x0)
       expect(i.compare(new Int64(0x12345678, 0x0))).toEqual(0)
@@ -555,7 +645,7 @@ describe('Int64', () => {
     })
   })
 
-  describe('isNegative', () => {
+  describe('Int64 isNegative', () => {
     test('positive', () => {
       let i = new Int64(0x0, 0x1)
       expect(i.isNegative()).toEqual(false)
@@ -572,7 +662,7 @@ describe('Int64', () => {
     })
   })
 
-  describe('topBitPosition', () => {
+  describe('Int64 topBitPosition', () => {
     test('normal', () => {
       let i = new Int64(0x12345678, 0x9abcdef0)
       expect(i.topBitPosition()).toEqual(61)
@@ -620,7 +710,7 @@ describe('UInt64', () => {
     })
   })
 
-  describe('shiftRight', () => {
+  describe('UInt64 shiftRight', () => {
     test('high negative', () => {
       const i = new UInt64(0x80402010, 0x0)
       expect(i.shiftRight(2)).toEqual(new UInt64(Buffer.from([
@@ -641,7 +731,7 @@ describe('UInt64', () => {
       expect(i.shiftRight(64)).toEqual(i)
     })
   })
-  describe('toString', () => {
+  describe('UInt64 toString', () => {
     test('toString', () => {
       let i = new UInt64(0xf0000000, 0xf0000000)
       expect(i.toString(2)).toEqual('1111000000000000000000000000000011110000000000000000000000000000')
@@ -670,7 +760,7 @@ describe('UInt64', () => {
       }).toThrow()
     })
   })
-  describe('toSigned', () => {
+  describe('UInt64 toSigned', () => {
     test('toSigned', () => {
       const ui = new UInt64(0xffffffff, 0xffffffff)
       const i = ui.toSigned()
@@ -679,7 +769,7 @@ describe('UInt64', () => {
       expect(i.toString()).toEqual('-1')
     })
   })
-  describe('add', () => {
+  describe('UInt64 add', () => {
     test('add', () => {
       const i1 = new UInt64(0x11111111, 0x11111111)
       const i2 = new UInt64(0x10101010, 0x01010101)
@@ -722,7 +812,7 @@ describe('UInt64', () => {
       // }).toThrow('Cannot add UInt64 to Int64')
     })
   })
-  describe('mul', () => {
+  describe('UInt64 mul', () => {
     test('mul', () => {
       const i = new UInt64(0x12345678, 0x9abcdef0)
       const muli = i.mul(new UInt64(0, 2))
@@ -738,33 +828,85 @@ describe('UInt64', () => {
       expect(i.mul(new UInt64(0x12345678, 0x9abcdef0))).toEqual(new UInt64(0xa5e20890, 0xf2a52100))
     })
   })
-  describe('div', () => {
-    test('div divisor < dividend', () => {
-      const i = new UInt64(0x12345678, 0x9abcdef0)
-      let divi = i.div(new UInt64(0x0, 0x2))
-      expect(divi).toBeInstanceOf(UInt64)
-      expect(divi).toEqual(i.shiftRight(1))
-      divi = i.div(new UInt64(0x0, 0x20))
-      expect(divi).toBeInstanceOf(UInt64)
-      expect(divi).toEqual(i.shiftRight(5))
-      divi = i.div(new UInt64(0x10000000, 0x0))
-      expect(divi).toBeInstanceOf(UInt64)
-      expect(divi).toEqual(new UInt64(0x1))
+  describe('UInt64 div', () => {
+    describe('UInt64 divisor', () => {
+      test('div divisor < dividend', () => {
+	const i = new UInt64(0x12345678, 0x9abcdef0)
+	let divi = i.div(new UInt64(0x0, 0x2))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(i.shiftRight(1))
+	divi = i.div(new UInt64(0x0, 0x20))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(i.shiftRight(5))
+	divi = i.div(new UInt64(0x10000000, 0x0))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(0x1))
+      })
+      test('div divisor > dividend', () => {
+	const i = new UInt64(0x12345678, 0x9abcdef0)
+	const divi = i.div(new UInt64(0x20000000, 0x0))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(0x0))
+      })
+      test('div divisor == dividend', () => {
+	const i = new UInt64(0x12345678, 0x9abcdef0)
+	const divi = i.div(i)
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(0x1))
+      })
     })
-    test('div divisor > dividend', () => {
-      const i = new UInt64(0x12345678, 0x9abcdef0)
-      const divi = i.div(new UInt64(0x20000000, 0x0))
-      expect(divi).toBeInstanceOf(UInt64)
-      expect(divi).toEqual(new UInt64(0x0))
-    })
-    test('div divisor == dividend', () => {
-      const i = new UInt64(0x12345678, 0x9abcdef0)
-      const divi = i.div(i)
-      expect(divi).toBeInstanceOf(UInt64)
-      expect(divi).toEqual(new UInt64(0x1))
+    describe('Int64 divisor', () => {
+      test('div Int64 positive divisor == UInt64 dividend', () => {
+	const i = new UInt64(0x12345678, 0x9abcdef0)
+	const divi = i.div(new Int(0x12345678, 0x9abcdef0))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(1))
+      })
+      test('div Int64 positive divisor > UInt64 dividend', () => {
+	const i = new UInt64(0x12345678, 0x9abcdef0)
+	const divi = i.div(new Int(0x20000008, 0x0))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(UInt64.Zero)
+      })
+      test('div Int64 positive divisor < UInt64 dividend', () => {
+	const i = new UInt64(0x12345678, 0x9abcdef0)
+	const divi = i.div(new Int(0x2))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(0x01234567, 0x89abcdef))
+      })
+      test('div Int64 negative divisor == UInt64 dividend (abs)', () => {
+	const i = new UInt64(0x123456789, 0x9abcdef0)
+	const divi = i.div(new Int(0xedcba987, 0x65432110))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(UInt64.Zero)
+      })
+      test('div Int64 negative divisor > UInt64 dividend (abs)', () => {
+	const i = new UInt64(0x123456789, 0x9abcdef0)
+	const divi = i.div(new Int(0x80000000, 0x0))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(0x7))
+      })
+      test('div Int64 negative divisor < UInt64 dividend (abs)', () => {
+	const i = new UInt64(0x123456789, 0x9abcdef0)
+	const divi = i.div(new Int(0xf0000000, 0x0))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(new UInt64(0xd))
+      })
+      test('div Int64 negative divisor (to unsigned) > UInt64 dividend', () => {
+	const i = new UInt64(0x12345678, 0x9abcdef0)
+	const divi = i.div(new Int(0xffffffff, 0xffffffff))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(UInt64(0xe))
+      })
+      test('div Int64 negative divisor (to unsigned) == UInt64 dividend', () => {
+	const i = new UInt64(0x87654321, 0x12345678)
+	const divi = i.div(new Int(0x87654321, 0x12345678))
+	expect(divi).toBeInstanceOf(UInt64)
+	expect(divi).toEqual(UInt64(0x1))
+      })
     })
   })
-  describe('compare', () => {
+  describe('UInt64 compare', () => {
     test('equal', () => {
       let i = new UInt64(0x12345678, 0x0)
       expect(i.compare(new UInt64(0x12345678, 0x0))).toEqual(0)
