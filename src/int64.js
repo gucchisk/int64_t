@@ -40,6 +40,18 @@ class Int64Base {
     throw new Error(`Invalid arguments`)
   }
 
+  typename () {
+    const className = this.constructor.name
+    throw new Error(`${className} does not implemented typename()`)
+  }
+
+  equal (i) {
+    if (this.typename() !== i.typename()) {
+      return false
+    }
+    return this.buffer.compare(i.toBuffer()) === 0
+  }
+
   and (i) {
     const lHigh = this.buffer.readUInt32BE()
     const lLow = this.buffer.readUInt32BE(4)
@@ -149,7 +161,11 @@ export class Int64 extends Int64Base {
   constructor(first, second) {
     super(first, second)
   }
-    
+
+  typename () {
+    return 'Int64'
+  }
+
   shiftRight (num, logical) {
     let buf = Buffer.alloc(8)
     let high = this.buffer.readInt32BE()
@@ -185,7 +201,7 @@ export class Int64 extends Int64Base {
   }
 
   compare (i) {
-    if (i.constructor.name === 'UInt64') {
+    if (i instanceof UInt64) {
       return this.toUnsigned().compare(i)
     }
     let high = this.buffer.readInt32BE()
@@ -262,6 +278,10 @@ Int64.Max = new Int64(0x7fffffff, 0xffffffff)
 Int64.Min = new Int64(0x80000000, 0)
 
 export class UInt64 extends Int64Base {
+  typename () {
+    return 'UInt64'
+  }
+
   shiftRight (num) {
     let buf = Buffer.alloc(8)
     let high = this.buffer.readUInt32BE()
