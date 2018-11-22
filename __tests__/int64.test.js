@@ -58,6 +58,33 @@ describe('Int64', () => {
     })
   })
 
+  describe('typename', () => {
+    test('Int64', () => {
+      const i = Int64.Zero
+      expect(i.typename()).toEqual('Int64')
+      i.constructor = UInt64
+      expect(i.typename()).toEqual('Int64')
+      i.constructor = Int64
+      i.constructor.Zero = new Int64(0)
+    })
+  })
+
+  describe('equal', () => {
+    test('true', () => {
+      let i = Int64.Zero
+      expect(i.equal(Int64.Zero)).toBeTruthy()
+      expect(i.equal(new Int64(0x0))).toBeTruthy()
+      i = new Int64(0x12345678, 0x9abcdef0)
+      expect(i.equal(new Int64(0x12345678, 0x9abcdef0))).toBeTruthy()
+    })
+    test('false', () => {
+      let i = Int64.Zero
+      expect(i.equal(new Int64(0x1))).toBeFalsy()
+      expect(i.equal(new Int64(0x1, 0x0))).toBeFalsy()
+      expect(i.equal(UInt64.Zero)).toBeFalsy()
+    })
+  })
+
   describe('and', () => {
     test('success', () => {
       const i = new Int64(0x80800000, 0x80800000)
@@ -508,6 +535,33 @@ describe('Int64', () => {
 })
 
 describe('UInt64', () => {
+  describe('typename', () => {
+    test('UInt64', () => {
+      const i = UInt64.Zero
+      expect(i.typename()).toEqual('UInt64')
+      i.constructor = Int64
+      expect(i.typename()).toEqual('UInt64')
+      i.constructor = UInt64
+      i.constructor.Zero = new UInt64(0)
+    })
+  })
+
+  describe('equal', () => {
+    test('true', () => {
+      let i = UInt64.Zero
+      expect(i.equal(UInt64.Zero)).toBeTruthy()
+      expect(i.equal(new UInt64(0x0))).toBeTruthy()
+      i = new UInt64(0x12345678, 0x9abcdef0)
+      expect(i.equal(new UInt64(0x12345678, 0x9abcdef0))).toBeTruthy()
+    })
+    test('false', () => {
+      let i = UInt64.Zero
+      expect(i.equal(new UInt64(0x1))).toBeFalsy()
+      expect(i.equal(new UInt64(0x1, 0x0))).toBeFalsy()
+      expect(i.equal(Int64.Zero)).toBeFalsy()
+    })
+  })
+
   describe('shiftRight', () => {
     test('high negative', () => {
       const i = new UInt64(0x80402010, 0x0)
