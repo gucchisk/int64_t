@@ -43,6 +43,12 @@ console.log('xor:' + i.xor(new UInt64(0xffffffff, 0xffffffff)).toString(16, true
 // shiftLeft()
 console.log('shiftLeft:' + i.shiftLeft(1).toString(16, true))
 
+// equal()
+console.log('equal:' + i.equal(new UInt64(0x12345678, 0x9abcdef0)))
+console.log('equal:' + i.equal(new UInt64(0x12345678, 0x9abcdef1)))
+console.log('equal:' + i.equal(new UInt64(0x12345679, 0x9abcdef0)))
+console.log('equal:' + i.equal(new Int64(0x12345678, 0x9abcdef0)))
+
 // compare()
 console.log('compare:' + i.compare(new UInt64(0x12345678, 0x0)))
 console.log('compare:' + i.compare(new UInt64(0x20000000, 0x0)))
