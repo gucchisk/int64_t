@@ -95,6 +95,15 @@ console.log(i.toShiftLeft(1).toString(16, true));  // 0x2468acf13579bde0
 ```
 
 ### Other operation
+* equal(i)
+```js
+let i = new UInt64(0x12345678, 0x9abcdef0);
+console.log(i.equal(new UInt64(0x12345678, 0x9abcdef0)));  // bool: true
+console.log(i.equal(new UInt64(0x12345678, 0x9abcdef1)));  // bool: false
+console.log(i.equal(new UInt64(0x12345679, 0x9abcdef0)));  // bool: false
+console.log(i.equal(new Int64(0x12345678, 0x9abcdef0)));  // bool: false
+```
+
 * compare(i)
 ```js
 let i = new UInt64(0x12345678, 0x9abcdef0);
