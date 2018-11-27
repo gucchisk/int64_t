@@ -448,6 +448,10 @@ export class UInt64 extends Int64Base {
   divAndMod (i) {
     return uint64PositiveDivAndMod(this, i)
   }
+
+  div (i) {
+    return this.divAndMod(i).div
+  }
   
   toString (radix, prefix) {
     if (radix === undefined) {
