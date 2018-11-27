@@ -152,8 +152,93 @@ class Int64Base {
     return num
   }
 
+  div (i) {
+    const divMod = this.divAndMod(i)
+    return divMod.div
+  }
+
+  // divAndMod (i) {
+  //   const compare = this.compare(i)
+  //   if (compare === 0) {
+  //     return {
+  // 	div: new this.constructor(0x1),
+  // 	mod: new this.constructor(0x0)
+  //     }
+  //   }
+  //   if (compare === 1) {
+  //     // console.log('bigger:' + this.toString(16))
+  //     let div = this.constructor.Zero
+  //     let current = this
+  //     const iTopBitPos = i.topBitPosition()
+  //     // console.log('topbitpos:' + iTopBitPos)
+  //     while (true) {
+  // 	let topBitPos = current.topBitPosition()
+  // 	let shift = topBitPos - iTopBitPos
+  // 	if (shift < 0) {
+  // 	  // console.log(current.toString(16))
+  // 	  break
+  // 	}
+  // 	let shiftedi = i.shiftLeft(shift)
+  // 	if (current.compare(shiftedi) === 0) {
+  // 	  div = div.add(new this.constructor(1).shiftLeft(shift))
+  // 	  current = this.constructor.Zero
+  // 	  break
+  // 	} else if (current.compare(shiftedi) === -1) {
+  // 	  break
+  // 	} else if (current.compare(shiftedi) === 1) {
+  // 	  div = div.add(new this.constructor(1).shiftLeft(shift))
+  // 	  current = current.sub(i.shiftLeft(shift))
+  // 	} else {
+  // 	  shift--
+  // 	  shiftedi = i.shiftLeft(shift)
+  // 	  div = div.add(new this.constructor(1).shiftLeft(shift))
+  // 	  current = current.sub(i.shiftLeft(shift))
+  // 	}
+  //     }
+  //     return {
+  // 	div: div,
+  // 	mod: current
+  //     }
+  //   }
+  //   // console.log('bigger:' + i.toString(16))
+  //   return {
+  //     div: new this.constructor(0x0),
+  //     mod: this
+  //   }
+  // }
+
   twosComplement () {
     return this.xor(UInt64.Max).add(new UInt64(0, 1))
+  }
+
+  topBitPosition () {
+    let high = this.buffer.readUInt32BE()
+    let low = this.buffer.readUInt32BE(4)
+    if (high > 0) {
+      let pos = 32
+      while (pos > 1) {
+	if (high & (1 << (pos - 1))) {
+	  break
+	}
+	pos--
+      }
+      if (pos != 0) {
+	return pos + 32
+      }
+    }
+    if (low > 0) {
+      let pos = 32
+      while (pos > 1) {
+	if (low & (1 << (pos - 1))) {
+	  break
+	}
+	pos--
+      }
+      if (pos != 0) {
+	return pos
+      }
+    }
+    return 0
   }
 }
 
@@ -221,6 +306,45 @@ export class Int64 extends Int64Base {
       return 1
     }
     return -1
+  }
+
+  divAndMod (i) {
+    if (i instanceof Int64) {
+      const compare = this.compare(i)
+      if (compare === 0) {
+	return {
+	  div: new this.constructor(0x1),
+	  mod: new this.constructor(0x0)
+	}
+      }
+      if (!(this.isNegative() || i.isNegative())) {
+	const divAndMod = uint64PositiveDivAndMod(this, i)
+	return {
+	  div: divAndMod.div.toSigned(),
+	  mod: divAndMod.mod.toSigned()
+	}
+      }
+      if (this.isNegative() && i.isNegative()) {
+	const divAndMod = uint64PositiveDivAndMod(this.twosComplement(), i.twosComplement())
+	return {
+	  div: divAndMod.div.toSigned(),
+	  mod: divAndMod.mod.toSigned().toNegative()
+	}
+      }
+      if (i.isNegative()) {
+	const divAndMod = uint64PositiveDivAndMod(this, i.twosComplement())
+	return {
+	  div: divAndMod.div.toSigned().twosComplement(),
+	  mod: divAndMod.mod.toSigned()
+	}
+      }
+      const divAndMod = uint64PositiveDivAndMod(this.twosComplement(), i)
+      return {
+	div: divAndMod.div.toSigned().twosComplement(),
+	mod: divAndMod.mod.toSigned().twosComplement()
+      }
+    }
+    return uint64PositiveDivAndMod(this, i)
   }
 
   toString (radix, prefix) {
@@ -320,6 +444,14 @@ export class UInt64 extends Int64Base {
     }
     return -1
   }
+
+  divAndMod (i) {
+    return uint64PositiveDivAndMod(this, i)
+  }
+
+  div (i) {
+    return this.divAndMod(i).div
+  }
   
   toString (radix, prefix) {
     if (radix === undefined) {
@@ -402,5 +534,57 @@ function checkType(l, r) {
   const rType = r.constructor.name
   if (lType !== rType) {
     throw new Error(`Cannot add ${lType} to ${rType}`)
+  }
+}
+
+function uint64PositiveDivAndMod(dividend, divisor) {
+  if (dividend instanceof Int64) {
+    dividend = dividend.toUnsigned()
+  }
+  if (divisor instanceof Int64) {
+    divisor = divisor.toUnsigned()
+  }
+  const compare = dividend.compare(divisor)
+  if (compare === 0) {
+    return {
+      div: new UInt64(0x1),
+      mod: UInt64.Zero
+    }
+  }
+  if (compare === 1) {
+    let div = UInt64.Zero
+    let current = dividend
+    const divisorTopBitPos = divisor.topBitPosition()
+    while (true) {
+      let topBitPos = current.topBitPosition()
+      let shift = topBitPos - divisorTopBitPos
+      if (shift < 0) {
+	break
+      }
+      let shiftedi = divisor.shiftLeft(shift)
+      if (current.compare(shiftedi) === 0) {
+	div = div.add(new UInt64(1).shiftLeft(shift))
+	current = UInt64.Zero
+	break
+      } else if (current.compare(shiftedi) === -1) {
+	break
+      } else if (current.compare(shiftedi) === 1) {
+	div = div.add(new UInt64(1).shiftLeft(shift))
+	current = current.sub(divisor.shiftLeft(shift))
+      } else {
+	shift--
+	shiftedi = divisor.shiftLeft(shift)
+	div = div.add(new UInt64(1).shiftLeft(shift))
+	current = current.sub(divisor.shiftLeft(shift))
+      }
+    }
+    return {
+      div: div,
+      mod: current
+    }
+  }
+  return {
+    div: UInt64.Zero,
+    mod: dividend
   }
 }
