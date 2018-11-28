@@ -361,7 +361,8 @@ export class Int64 extends Int64Base {
     let negative = (high & 0x80000000) !== 0
     if (negative) {
       high = ~high
-      low = 2 ** 32 - low
+      // low = 2 ** 32 - low  // over v8
+      low = Math.pow(2, 32) - low  // for node v6
     }
     while (true) {
       const low_and_high_mod = (high % radix) * (2 ** 32) + low
