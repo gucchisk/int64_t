@@ -59,7 +59,14 @@ console.log(i1.sub(i2).toString(16, true));  // 0x123456789abcddf
 ```js
 let i1 = new Int64(0x12345678, 0x9abcdef0);
 let i2 = new Int64(0x0, 0xf);
-console.log(i1.mul(i2).toString(16, true));  // 0x1111111111111010
+console.log(i1.div(i2).toString(16, true));  // 0x1111111111111010
+```
+
+* div(int64) (/)
+```js
+let i1 = new Int64(0x12345678, 0x9abcdef0);
+let i2 = new Int64(0x0, 0xf);
+console.log(i1.div(i2).toString(16, true));  // 0x136b06e70b74210
 ```
 
 ### Bit operations

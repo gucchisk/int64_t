@@ -567,8 +567,6 @@ function uint64PositiveDivAndMod(dividend, divisor) {
 	div = div.add(new UInt64(1).shiftLeft(shift))
 	current = UInt64.Zero
 	break
-      } else if (current.compare(shiftedi) === -1) {
-	break
       } else if (current.compare(shiftedi) === 1) {
 	div = div.add(new UInt64(1).shiftLeft(shift))
 	current = current.sub(divisor.shiftLeft(shift))
