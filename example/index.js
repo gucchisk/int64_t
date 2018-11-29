@@ -24,6 +24,9 @@ console.log('sub:' + i.sub(new UInt64(0x11111111, 0x11111111)).toString(16, true
 // mul()
 console.log('mul:' + i.mul(new UInt64(0x0, 0xf)).toString(16, true))
 
+// div()
+console.log('div:' + i.div(new UInt64(0x0, 0xf)).toString(16, true))
+
 // and()
 console.log('and:' + i.add(new UInt64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true))
 

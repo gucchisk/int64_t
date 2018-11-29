@@ -440,6 +440,9 @@ describe('Int64', () => {
 	divi = i.div(new Int64(0x10000000, 0x0))
 	expect(divi).toBeInstanceOf(Int64)
 	expect(divi).toEqual(new Int64(0x1))
+	divi = i.div(new Int64(0xf))
+	expect(divi).toBeInstanceOf(Int64)
+	expect(divi).toEqual(new Int64(0x136b06e, 0x70b74210))
       })
       test('div positive divisor > positive dividend', () => {
 	const i = new Int64(0x12345678, 0x9abcdef0)
