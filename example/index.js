@@ -22,10 +22,13 @@ console.log('add:' + i.add(new UInt64(0x11111111, 0x11111111)).toString(16, true
 console.log('sub:' + i.sub(new UInt64(0x11111111, 0x11111111)).toString(16, true))
 
 // mul()
-console.log('mul:' + i.mul(new UInt64(0x0, 0xf)).toString(16, true))
+console.log('mul:' + new UInt64(0xf, 0x12345678).mul(new UInt64(0x0, 0xf)).toString(16, true))
 
 // div()
 console.log('div:' + i.div(new UInt64(0x0, 0xf)).toString(16, true))
+
+// mod()
+console.log('mod:' + i.mod(new UInt64(0x0, 0xe)).toString(16, true))
 
 // and()
 console.log('and:' + i.add(new UInt64(0x0f0f0f0f, 0x0f0f0f0f)).toString(16, true))
