@@ -57,9 +57,9 @@ console.log(i1.sub(i2).toString(16, true));  // 0x123456789abcddf
 
 * mul(int64) (*)
 ```js
-let i1 = new Int64(0x12345678, 0x9abcdef0);
+let i1 = new Int64(0xf, 0x1234567678);
 let i2 = new Int64(0x0, 0xf);
-console.log(i1.div(i2).toString(16, true));  // 0x1111111111111010
+console.log(i1.mul(i2).toString(16, true));  // 0xe211111108
 ```
 
 * div(int64) (/)
@@ -67,6 +67,13 @@ console.log(i1.div(i2).toString(16, true));  // 0x1111111111111010
 let i1 = new Int64(0x12345678, 0x9abcdef0);
 let i2 = new Int64(0x0, 0xf);
 console.log(i1.div(i2).toString(16, true));  // 0x136b06e70b74210
+```
+
+* mod(int64) (%)
+```js
+let i1 = new Int64(0x12345678, 0x9abcdef0);
+let i2 = new Int64(0x0, 0xe);
+console.log(i1.mod(i2).toString(16, true));  // 0xc
 ```
 
 ### Bit operations

@@ -157,55 +157,10 @@ class Int64Base {
     return divMod.div
   }
 
-  // divAndMod (i) {
-  //   const compare = this.compare(i)
-  //   if (compare === 0) {
-  //     return {
-  // 	div: new this.constructor(0x1),
-  // 	mod: new this.constructor(0x0)
-  //     }
-  //   }
-  //   if (compare === 1) {
-  //     // console.log('bigger:' + this.toString(16))
-  //     let div = this.constructor.Zero
-  //     let current = this
-  //     const iTopBitPos = i.topBitPosition()
-  //     // console.log('topbitpos:' + iTopBitPos)
-  //     while (true) {
-  // 	let topBitPos = current.topBitPosition()
-  // 	let shift = topBitPos - iTopBitPos
-  // 	if (shift < 0) {
-  // 	  // console.log(current.toString(16))
-  // 	  break
-  // 	}
-  // 	let shiftedi = i.shiftLeft(shift)
-  // 	if (current.compare(shiftedi) === 0) {
-  // 	  div = div.add(new this.constructor(1).shiftLeft(shift))
-  // 	  current = this.constructor.Zero
-  // 	  break
-  // 	} else if (current.compare(shiftedi) === -1) {
-  // 	  break
-  // 	} else if (current.compare(shiftedi) === 1) {
-  // 	  div = div.add(new this.constructor(1).shiftLeft(shift))
-  // 	  current = current.sub(i.shiftLeft(shift))
-  // 	} else {
-  // 	  shift--
-  // 	  shiftedi = i.shiftLeft(shift)
-  // 	  div = div.add(new this.constructor(1).shiftLeft(shift))
-  // 	  current = current.sub(i.shiftLeft(shift))
-  // 	}
-  //     }
-  //     return {
-  // 	div: div,
-  // 	mod: current
-  //     }
-  //   }
-  //   // console.log('bigger:' + i.toString(16))
-  //   return {
-  //     div: new this.constructor(0x0),
-  //     mod: this
-  //   }
-  // }
+  mod (i) {
+    const divMod = this.divAndMod(i)
+    return divMod.mod
+  }
 
   twosComplement () {
     return this.xor(UInt64.Max).add(new UInt64(0, 1))
@@ -569,12 +524,14 @@ function uint64PositiveDivAndMod(dividend, divisor) {
 	break
       } else if (current.compare(shiftedi) === 1) {
 	div = div.add(new UInt64(1).shiftLeft(shift))
-	current = current.sub(divisor.shiftLeft(shift))
-      } else {
+	current = current.sub(shiftedi)
+      } else if (shift > 0) {
 	shift--
 	shiftedi = divisor.shiftLeft(shift)
 	div = div.add(new UInt64(1).shiftLeft(shift))
-	current = current.sub(divisor.shiftLeft(shift))
+	current = current.sub(shiftedi)
+      } else {
+	break
       }
     }
     return {

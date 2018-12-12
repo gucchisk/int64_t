@@ -539,7 +539,6 @@ describe('Int64', () => {
 	expect(divi).toBeInstanceOf(UInt64)
 	expect(divi).toEqual(UInt64.Zero)
       })
-
       test('div positive divisor == negative dividend (abs)', () => {
 	const i = new Int64(0xedcba987, 0x65432110)
 	const divi = i.div(new UInt64(0x12345678, 0x9abcdef0))
@@ -548,6 +547,134 @@ describe('Int64', () => {
       })
     })
   })
+
+  describe('Int64 mod', () => {
+    describe('Int64 divisor', () => {
+      test('mod divisor == dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const modi = i.mod(i)
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(Int64.Zero)
+      })
+      test('mod positive divisor < positive dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	let modi = i.mod(new Int64(0x0, 0x2))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(Int64.Zero)
+	modi = i.mod(new Int64(0x0, 0x20))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(new Int64(0x10))
+	modi = i.mod(new Int64(0x10000000, 0x0))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(new Int64(0x02345678, 0x9abcdef0))
+	modi = i.mod(new Int64(0xf))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(Int64.Zero)
+      })
+      test('mod positive divisor > positive dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const modi = i.mod(new Int64(0x20000000, 0x0))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(i)
+      })
+      test('mod negative divisor < positive dividend (abs)', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	let modi = i.mod(new Int64(0xffffffff, 0xfffffffe))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(Int64.Zero)
+	modi = i.mod(new Int64(0xffffffff, 0x0))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(new Int64(0x0, 0x9abcdef0))
+      })
+      test('mod negative divisor > positive dividend (abs)', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	let modi = i.mod(new Int64(0x80000000, 0xf0000000))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(i)
+      })
+      test('mod negative divisor == positive dividend (abs)', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const modi = i.mod(new Int64(0xedcba987, 0x65432110))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(Int64.Zero)
+      })
+      test('mod positive divisor < negative dividend (abs)', () => {
+	const i = new Int64(0x80000000, 0x0)
+	const modi = i.mod(new Int64(3))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(new Int64(0x2).toNegative())
+      })
+      test('mod positive divisor > negative dividend (abs)', () => {
+	const i = new Int64(0xf0000000, 0x0)
+	const modi = i.mod(new Int64(0x12345678, 0x9abcdef0))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(i)
+      })
+      test('mod positive divisor == negative dividend (abs)', () => {
+	const i = new Int64(0xffffffff, 0xffffffff)
+	const modi = i.mod(new Int64(1))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(Int64.Zero)
+      })
+      test('mod negative divisor < negative dividend (abs)', () => {
+	const i = new Int64(0x80000000, 0x0)
+	const modi = i.mod(new Int64(-3))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(new Int64(0x2).toNegative())
+      })
+      test('mod negative divisor > negative dividend (abs)', () => {
+	const i = new Int64(0xf0000000, 0x0)
+	const modi = i.mod(new Int64(0x80000000, 0x0))
+	expect(modi).toBeInstanceOf(Int64)
+	expect(modi).toEqual(new Int64(0xf0000000, 0x0))
+      })
+    })
+    describe('UInt64 divisor', () => {
+      test('mod divisor == dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const modi = i.mod(new UInt64(0x12345678, 0x9abcdef0))
+	expect(modi).toBeInstanceOf(UInt64)
+	expect(modi).toEqual(UInt64.Zero)
+      })
+      test('mod positive divisor < positive dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const modi = i.mod(new UInt64(0x20))
+	expect(modi).toBeInstanceOf(UInt64)
+	expect(modi).toEqual(new UInt64(0x10))
+      })
+      test('mod positive divisor > positive dividend', () => {
+	const i = new Int64(0x12345678, 0x9abcdef0)
+	const modi = i.mod(new UInt64(0x80000000, 0x0))
+	expect(modi).toBeInstanceOf(UInt64)
+	expect(modi).toEqual(i)
+      })
+      test('mod positive divisor < negative dividend (abs)', () => {
+	const i = new Int64(0x80000000, 0x12345678)
+	const modi = i.mod(new UInt64(0x20))
+	expect(modi).toBeInstanceOf(UInt64)
+	expect(modi).toEqual(new UInt64(0x18))
+      })
+      test('mod positive divisor > negative dividend (abs)', () => {
+	let i = new Int64(0xf0000000, 0x12345678)
+	let modi = i.mod(new UInt64(0x12345678, 0x9abcdef0))
+	expect(modi).toBeInstanceOf(UInt64)
+	expect(modi).toEqual(new UInt64(0x3579be0, 0x369d0448))
+      })
+      test('mod positive divisor > negative dividend (unsigned)', () => {
+	const i = new Int64(0x80000000, 0x12345678)
+	const modi = i.mod(new UInt64(0x80000001, 0x12345678))
+	expect(modi).toBeInstanceOf(UInt64)
+	expect(modi).toEqual(i)
+      })
+      test('mod positive divisor == negative dividend (abs)', () => {
+	const i = new Int64(0xedcba987, 0x65432110)
+	const modi = i.mod(new UInt64(0x12345678, 0x9abcdef0))
+	expect(modi).toBeInstanceOf(UInt64)
+	expect(modi).toEqual(new UInt64(0x01234567, 0x89abcee0))
+      })
+    })
+  })
+
   describe('Int64 toNegative', () => {
     test('toNegative', () => {
       let i = new Int64(0x0, 0x1)
