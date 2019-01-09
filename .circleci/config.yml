@@ -1,9 +1,9 @@
 version: 2
 jobs:
-  test:
+  test-node10:
     docker:
-      - image: circleci/node:latest
-    steps:
+      - image: circleci/node:10
+    steps: &test-steps
       - checkout
       - run:
           name: install-npm
@@ -11,6 +11,14 @@ jobs:
       - run:
           name: test
           command: npm test
+  test-node8:
+    docker:
+      - image: circleci/node:8
+    steps: *test-steps
+  test-node6:
+    docker:
+      - image: circleci/node:6
+    steps: *test-steps
   build_and_deploy:
     docker:
       - image: circleci/node:latest
@@ -35,13 +43,14 @@ workflows:
   version: 2
   test_and_deploy:
     jobs:
-      - test:
-          filters:
-            tags:
-              only: /.*/
+      - test-node10
+      - test-node8
+      - test-node6
       - build_and_deploy:
           requires:
-            - test
+            - test-node10
+            - test-node8
+            - test-node6
           filters:
             tags:
               only: /.*/
