@@ -15,6 +15,10 @@ jobs:
     docker:
       - image: circleci/node:8
     steps: *test-steps
+  test-node6:
+    docker:
+      - image: circleci/node:6
+    steps: *test-steps
   build_and_deploy:
     docker:
       - image: circleci/node:latest
@@ -41,10 +45,12 @@ workflows:
     jobs:
       - test-node10
       - test-node8
+      - test-node6
       - build_and_deploy:
           requires:
             - test-node10
             - test-node8
+            - test-node6
           filters:
             tags:
               only: /.*/
