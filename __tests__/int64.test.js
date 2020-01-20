@@ -35,6 +35,151 @@ describe('Int64', () => {
       }).not.toThrow()
       expect(i).toEqual(new Int64(0xffffffff, 0xffffffff))
     })
+    test('success decimal string cotructor', () => {
+      let i = new Int64('15')
+      expect(i).toEqual(new Int64(15))
+      i = new Int64('123456789')
+      expect(i).toEqual(new Int64(123456789))
+      i = new Int64(String(Number.MAX_SAFE_INTEGER))
+      expect(i).toEqual(new Int64(Number.MAX_SAFE_INTEGER))
+      i = new Int64('9007199254740992')
+      expect(i).toEqual(new Int64(0x200000, 0x0))
+      i = new Int64('9223372036854775807')
+      expect(i).toEqual(Int64.Max)
+
+      i = new Int64('-87654321')
+      expect(i).toEqual(new Int64(-87654321))
+      i = new Int64(`-${String(Number.MAX_SAFE_INTEGER)}`)
+      expect(i).toEqual(new Int64(-Number.MAX_SAFE_INTEGER))
+      i = new Int64('-9007199254740992')
+      expect(i).toEqual(new Int64(0xffe00000, 0x0))
+      i = new Int64('-9007199254740993')
+      expect(i).toEqual(new Int64(0xffdfffff, 0xffffffff))
+      i = new Int64('-9223372036854775808')
+      expect(i).toEqual(Int64.Min)
+    })
+
+    test('error diamal string constructor', () => {
+      expect(() => {
+        new Int64('9223372036854775808')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('10000000000000000000')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('-9223372036854775809')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('-10000000000000000000')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('100000000000000000000')
+      }).toThrow(`Over 64bit signed integer range`)
+    })
+
+    test('success hex string constructor ', () => {
+      let i = new Int64('0x15')
+      expect(i).toEqual(new Int64(0x15))
+      i = new Int64('0x12345678')
+      expect(i).toEqual(new Int64(0x12345678))
+      i = new Int64('0xffffffff')
+      expect(i).toEqual(new Int64(0xffffffff))
+
+      i = new Int64('0x123456789')
+      expect(i).toEqual(new Int64(0x1, 0x23456789))
+      i = new Int64('0x7fffffffffffffff')
+      expect(i).toEqual(Int64.Max)
+
+      i = new Int64('-0x8000000000000000')
+      expect(i).toEqual(Int64.Min)
+      i = new Int64('-0x12345678')
+      expect(i).toEqual(new Int64(-0x12345678))
+      i = new Int64('-0xffffffff')
+      expect(i).toEqual(new Int64(-0xffffffff))
+      i = new Int64('-0x123456789')
+      expect(i).toEqual(new Int64(0xfffffffe, 0xdcba9877))
+    })
+
+    test('error hex string constructor', () => {
+      expect(() => {
+        new Int64('0x8000000000000000')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('0xffffffffffffffff')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('-0x8000000000000001')
+      }).toThrow(`Over 64bit signed integer range`)
+    })
+
+    test('success binary string constructor', () => {
+      let i = new Int64('0b11')
+      expect(i).toEqual(new Int64(0b11))
+      i = new Int64('0b00010010001101000101011001111000')
+      expect(i).toEqual(new Int64(0x12345678))
+      i = new Int64('0b000100100011010001010110011110001001')
+      expect(i).toEqual(new Int64(0x123456789))
+      i = new Int64('0b11111111111111111111111111111111111111111111111111111')
+      expect(i).toEqual(new Int64(Number.MAX_SAFE_INTEGER))
+      i = new Int64('0b111111111111111111111111111111111111111111111111111111')
+      expect(i).toEqual(new Int64(0x3fffff, 0xffffffff))
+      i = new Int64('0b0111111111111111111111111111111111111111111111111111111111111111')
+      expect(i).toEqual(Int64.Max)
+      i = new Int64('-0b1000000000000000000000000000000000000000000000000000000000000000')
+      expect(i).toEqual(Int64.Min)
+    })
+
+    test('error binary string constructor', () => {
+      let i
+      expect(() => {
+        new Int64('0b1000000000000000000000000000000000000000000000000000000000000000')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        i = new Int64('-0b1000000000000000000000000000000000000000000000000000000000000001')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('0b10000000000000000000000000000000000000000000000000000000000000000')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('-0b10000000000000000000000000000000000000000000000000000000000000000')
+      }).toThrow(`Over 64bit signed integer range`)
+    })
+
+    test('success octal string constructor', () => {
+      let i = new Int64('0o15')
+      expect(i).toEqual(new Int64(0o15))
+      i = new Int64('0o2215053170')
+      expect(i).toEqual(new Int64(0x12345678))
+      i = new Int64('0o44321263611')
+      expect(i).toEqual(new Int64(0x123456789))
+      i = new Int64('0o37777777777')
+      expect(i).toEqual(new Int64(0xffffffff))
+      i = new Int64('0o40000000000')
+      expect(i).toEqual(new Int64(0x100000000))
+
+      i = new Int64('0o200000000000000000')
+      expect(i).toEqual(new Int64(0x10000000000000))
+      i = new Int64('0o777777777777777777777')
+      expect(i).toEqual(Int64.Max)
+      i = new Int64('-0o1000000000000000000000')
+      expect(i).toEqual(Int64.Min)
+    })
+
+    test('error octal string constructor', () => {
+      expect(() => {
+        new Int64('0o1000000000000000000000')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('0o2000000000000000000000')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('0o10000000000000000000000')
+      }).toThrow(`Over 64bit signed integer range`)
+      expect(() => {
+        new Int64('-0o1000000000000000000001')
+      }).toThrow(`Over 64bit signed integer range`)
+    })
+
     test('error Buffer length', () => {
       expect(() => {
         new Int64(Buffer.from([0x80]))
@@ -60,7 +205,7 @@ describe('Int64', () => {
     test('error invalid arguments', () => {
       expect(() => {
         new Int64('hello')
-      }).toThrow('Invalid arguments')
+      }).toThrow('Invalid string as integer')
     })
   })
 
@@ -145,10 +290,10 @@ describe('Int64', () => {
 	0x20, 0x10, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00
       ])))
       expect(i.shiftLeft(32)).toEqual(new Int64(Buffer.from([
-	0x80, 0x40, 0x20, 0x10, 0x00, 0x00, 0x00, 0x00
+  0x80, 0x40, 0x20, 0x10, 0x00, 0x00, 0x00, 0x00
       ])))
       expect(i.shiftLeft(34)).toEqual(new Int64(Buffer.from([
-	0x01, 0x00, 0x80, 0x40, 0x00, 0x00, 0x00, 0x00
+        0x01, 0x00, 0x80, 0x40, 0x00, 0x00, 0x00, 0x00
       ])))
       expect(i.shiftLeft(63)).toEqual(Int64.Zero)
       expect(i.shiftLeft(64)).toEqual(Int64.Zero)

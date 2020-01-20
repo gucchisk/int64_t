@@ -1,5 +1,26 @@
 class Int64Base {
   constructor (first, second) {
+
+    const singleNumberConstructor = (i) => {
+      if (!Number.isSafeInteger(i)) {
+        throw new Error(`Unsafe integer`)
+      }
+      let high = 0, low = 0
+      if (i >= 0) {
+        high = i / 0x100000000
+        low = i & 0xffffffff
+      } else {
+        if (-i <= 0xffffffff) {
+          high = 0xffffffff
+          low = i & 0xffffffff
+        } else {
+          high = 0xffffffff - (((-i) / 0x100000000) >>> 0)
+          low = 0x100000000 - ((-i) & 0xffffffff)
+        }
+      }
+      this.buffer = int32PairToBuffer(high, low)
+    }
+
     // new Int64(Buffer)
     if (first instanceof Buffer) {
       const length = first.length
@@ -9,26 +30,12 @@ class Int64Base {
       this.buffer = first
       return
     }
+
+    // Number
     if (typeof first === 'number') {
       // new Int64(Number)
       if (second === undefined) {
-        if (!Number.isSafeInteger(first)) {
-          throw new Error(`Unsafe integer`)
-        }
-        let high = 0, low = 0
-        if (first >= 0) {
-          high = first / 0x100000000
-          low = first & 0xffffffff
-        } else {
-          if (-first <= 0xffffffff) {
-            high = 0xffffffff
-            low = first & 0xffffffff
-          } else {
-            high = 0xffffffff - (((-first) / 0x100000000) >>> 0)
-            low = 0x100000000 - ((-first) & 0xffffffff)
-          }
-        }
-        this.buffer = int32PairToBuffer(high, low)
+        singleNumberConstructor(first)
         return
       }
       // new Int64(Number, Number)
@@ -202,6 +209,153 @@ class Int64Base {
 
 export class Int64 extends Int64Base {
   constructor(first, second) {
+    // new Int64(string)
+    if (typeof first === 'string') {
+      let negative = false
+      let uintStr = first
+      if (first.charAt(0) === '-') {
+        negative = true
+        uintStr = first.substring(1, first.length)
+      }
+      const radix = getRadix(uintStr)
+      let noPrefixStr = uintStr
+      if (radix !== 10) {
+        noPrefixStr = uintStr.substring(2, uintStr.length)
+      } else {
+        if (uintStr.length > 20) {
+          throw new Error(`Over 64bit signed integer range`)
+        }
+        const intValue = parseInt(first)
+        try {
+          if (!isNaN(intValue)) {
+            super(intValue)
+            return
+          }
+        } catch (e) {
+        }
+
+        let low = 0
+        let high = 0
+        let pos = 0
+        while (pos < uintStr.length) {
+          const i = parseInt(uintStr[pos++])
+          if (isNaN(i)) {
+            throw new Error(`Invalid string as integer`)
+          }
+          low = low * 10 + i
+          high = high * 10 + Math.floor(low / 0x100000000)
+          low %= 0x100000000
+        }
+        if (negative) {
+          if (high > 0x80000000 || (high === 0x80000000 && low > 0)) {
+            throw new Error(`Over 64bit signed integer range`)
+          }
+          high = ~high
+          if (low) {
+            low = 0x100000000 - low
+          } else {
+            high++
+          }
+        } else {
+          if (high > 0x7fffffff) {
+            throw new Error(`Over 64bit signed integer range`)
+          }
+        }
+        super(int32PairToBuffer(high, low))
+        return
+      }
+
+      let high, low
+      switch (radix) {
+        case 2: {
+          if (noPrefixStr.length > 64) {
+            throw new Error(`Over 64bit signed integer range`)
+          }
+          if (noPrefixStr.length <= 53) {
+            if (negative) {
+              noPrefixStr = `-${noPrefixStr}`
+            }
+            const i = parseInt(noPrefixStr, radix)
+            if (isNaN(i)) {
+              throw new Error(`Invalid string as integer`)
+            }
+            super(i)
+            return
+          }
+          const length = noPrefixStr.length
+          high = parseInt(noPrefixStr.substring(0, length - 32), radix)
+          low = parseInt(noPrefixStr.substring(length - 32, length), radix)
+          break
+        }
+        case 8:
+          if (noPrefixStr.length > 22) {
+            throw new Error(`Over 64bit signed integer range`)
+          }
+          if (noPrefixStr.length <= 17) {
+            if (negative) {
+              noPrefixStr = `-${noPrefixStr}`
+            }
+            const i = parseInt(noPrefixStr, radix)
+            if (isNaN(i)) {
+              throw new Error(`Invalid string as integer`)
+            }
+            super(i)
+            return
+          }
+          const length = noPrefixStr.length
+          let lhigh = parseInt(noPrefixStr.substring(0, length - 11), radix)
+          let llow = parseInt(noPrefixStr.substring(length - 11, length), radix)
+          low = llow % 0x100000000
+          const carry = Math.floor(llow / 0x100000000)
+          if (lhigh >= 0x80000000) {
+            throw new Error(`Over 64bit signed integer range`)
+          }
+          high = (lhigh << 1) >>> 0
+          high += carry
+          break
+        case 16: {
+          if (noPrefixStr.length > 16) {
+            throw new Error(`Over 64bit signed integer range`)
+          }
+          if (noPrefixStr.length <= 8) {
+            if (negative) {
+              uintStr = `-${uintStr}`
+            }
+            const i = parseInt(uintStr, radix)
+            if (isNaN(i)) {
+              throw new Error(`Invalid string as integer`)
+            }
+            super(i)
+            return
+          }
+          const length = noPrefixStr.length
+          high = parseInt(noPrefixStr.substring(0, length - 8), radix)
+          low = parseInt(noPrefixStr.substring(length - 8, length), radix)
+          break
+        }
+      }
+      if ((!negative && high >= 0x80000000) ||
+        (negative && ((high > 0x80000001) || (high == 0x80000000 && low > 0))))  {
+        throw new Error(`Over 64bit signed integer range`)
+      }
+      if (negative) {
+        if (high > 0x80000001 || (high === 0x80000000 && low > 0)) {
+          throw new Error(`Over 64bit signed integer range`)
+        }
+        high = ~high
+        if (low) {
+          low = 0x100000000 - low
+        } else {
+          high++
+        }
+      } else {
+        if (high >= 0x80000000) {
+          throw new Error(`Over 64bit signed integer range`)
+        }
+      }
+      super(int32PairToBuffer(high, low))
+      return
+    }
     super(first, second)
   }
 
@@ -456,6 +610,22 @@ function prefixString(radix) {
   }
 }
 
+function getRadix(intString) {
+  if (intString.length <= 2) {
+    return 10
+  }
+  switch (intString.substring(0, 2)) {
+    case '0b':
+      return 2
+    case '0o':
+      return 8
+    case '0x':
+      return 16
+    default:
+      return 10
+  }
+}
+
 UInt64.Zero = new UInt64(0, 0)
 UInt64.Min = UInt64.Zero
 UInt64.Max = new UInt64(0xffffffff, 0xffffffff)
@@ -486,14 +656,6 @@ function shiftMaskLow(num) {
   if (num === 0 ) return 0
   const shift = 32 - num
   return (2 ** 32 - 1) >>> shift
-}
-
-function checkType(l, r) {
-  const lType = l.constructor.name
-  const rType = r.constructor.name
-  if (lType !== rType) {
-    throw new Error(`Cannot add ${lType} to ${rType}`)
-  }
 }
 
 function uint64PositiveDivAndMod(dividend, divisor) {
