@@ -37,7 +37,7 @@ describe('Int64', () => {
     })
     test('error Buffer length', () => {
       expect(() => {
-	      new Int64(Buffer.from([0x80]))
+        new Int64(Buffer.from([0x80]))
       }).toThrow(/Buffer length must be 8/)
       expect(() => {
         let buf = Buffer.from([0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00])

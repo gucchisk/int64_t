@@ -103,7 +103,7 @@ class Int64Base {
       let value = low << (num - 32)
       const int32Buf = int32ToBuffer(value)
       for (let i = 0; i < 4; i++) {
-	      buf[i] = int32Buf[i]
+        buf[i] = int32Buf[i]
       }
     } else {
       let shifted_high = ((high << num) & 0xffffffff) + ((low & shiftMaskHigh(num)) >>> (32 - num))
@@ -329,7 +329,7 @@ export class Int64 extends Int64Base {
       low = Math.floor(low_and_high_mod / radix)
       str = (low_and_high_mod % radix).toString(radix) + str
       if (!high && !low) {
-	      break
+        break
       }
     }
     str = pre + str
@@ -374,7 +374,7 @@ export class UInt64 extends Int64Base {
       let value = high >>> (num - 32)
       const int32Buf = int32ToBuffer(value)
       for (let i = 0; i < 4; i++) {
-	      buf[4 + i] = int32Buf[i]
+        buf[4 + i] = int32Buf[i]
       }
     } else {
       let shifted_high = high >>> num
@@ -391,10 +391,10 @@ export class UInt64 extends Int64Base {
     let iLow = i.toBuffer().readUInt32BE(4)
     if (high === iHigh) {
       if (low === iLow) {
-	      return 0
+        return 0
       }
       if (low > iLow) {
-	      return 1
+        return 1
       }
       return -1
     }
@@ -430,7 +430,7 @@ export class UInt64 extends Int64Base {
       low = Math.floor(low_and_high_mod / radix)
       str = (low_and_high_mod % radix).toString(radix) + str
       if (!high && !low) {
-	      break
+        break
       }
     }
     return pre + str
@@ -518,7 +518,7 @@ function uint64PositiveDivAndMod(dividend, divisor) {
       let topBitPos = current.topBitPosition()
       let shift = topBitPos - divisorTopBitPos
       if (shift < 0) {
-	      break
+        break
       }
       let shiftedi = divisor.shiftLeft(shift)
       if (current.compare(shiftedi) === 0) {
