@@ -4,7 +4,7 @@ class Int64Base {
     if (first instanceof Buffer) {
       const length = first.length
       if (length !== 8) {
-	      throw new Error(`Buffer length must be 8, current argument length is ${length}`)
+        throw new Error(`Buffer length must be 8, current argument length is ${length}`)
       }
       this.buffer = first
       return
@@ -12,12 +12,12 @@ class Int64Base {
     if (typeof first === 'number') {
       // new Int64(Number)
       if (second === undefined) {
-	      if (!Number.isSafeInteger(first)) {
-	        throw new Error(`Unsafe integer`)
-      	}
-	      let high = 0, low = 0
-	      if (first >= 0) {
-	        high = first / 0x100000000
+        if (!Number.isSafeInteger(first)) {
+          throw new Error(`Unsafe integer`)
+        }
+        let high = 0, low = 0
+        if (first >= 0) {
+          high = first / 0x100000000
           low = first & 0xffffffff
         } else {
           if (-first <= 0xffffffff) {
@@ -217,25 +217,25 @@ export class Int64 extends Int64Base {
     if (num >= 32) {
       let value
       if (logical) {
-	      value = high >>> (num - 32)
+        value = high >>> (num - 32)
       } else {
-	      value = high >> (num - 32)
+        value = high >> (num - 32)
       }
       const int32Buf = int32ToBuffer(value)
       for (let i = 0; i < 4; i++) {
-	      buf[4 + i] = int32Buf[i]
+        buf[4 + i] = int32Buf[i]
       }
       if (!logical && (high & 0x80000000) !== 0) {
-	      for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < 4; i++) {
           buf[i] = 0xff
         }
       }
     } else {
       let shifted_high
       if (logical) {
-	      shifted_high = high >>> num
+        shifted_high = high >>> num
       } else {
-	      shifted_high = high >> num
+        shifted_high = high >> num
       }
       let shifted_low = ((high & shiftMaskLow(num)) << (32 - num)) + (low >>> num)
       buf = int32PairToBuffer(shifted_high, shifted_low)
@@ -253,10 +253,10 @@ export class Int64 extends Int64Base {
     let iLow = i.toBuffer().readUInt32BE(4)
     if (high === iHigh) {
       if (low === iLow) {
-	      return 0
+        return 0
       }
       if (low > iLow) {
-	      return 1
+        return 1
       }
       return -1
     }
