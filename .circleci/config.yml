@@ -43,15 +43,15 @@ workflows:
   version: 2
   test_and_deploy:
     jobs:
-      - test-node10
+      - test-node10:
           filters:
             tags:
               only: /^v.*/
-      - test-node8
+      - test-node8:
           filters:
             tags:
               only: /^v.*/
-      - test-node6
+      - test-node6:
           filters:
             tags:
               only: /^v.*/
