@@ -4,14 +4,13 @@ describe('Int64', () => {
   describe('Int64 constructor', () => {
     test('success Buffer', () => {
       expect(() => {
-	let buf = Buffer.from([0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00])
-	new Int64(buf)
+        let buf = Buffer.from([0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00])
+        new Int64(buf)
       }).not.toThrow()
     })
     test('success high & low int', () => {
-      expect(() => {
-	new Int64(0x80800000, 0x80800000)
-      }).not.toThrow()
+      let i = new Int64(0x80800000, 0x80800000)
+      expect(i).toEqual(new Int64(Buffer.from([0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00])))
     })
     test('success int', () => {
       let i
@@ -38,22 +37,29 @@ describe('Int64', () => {
     })
     test('error Buffer length', () => {
       expect(() => {
-	new Int64(Buffer.from([0x80]))
+        new Int64(Buffer.from([0x80]))
       }).toThrow(/Buffer length must be 8/)
       expect(() => {
-	let buf = Buffer.from([0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00])
-	new Int64(buf)
+        let buf = Buffer.from([0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0x00, 0x00, 0x00])
+        new Int64(buf)
       }).toThrow(/Buffer length must be 8/)
     })
-    test('error unsafe int', () => {
-      let i
+    test('error high & low int', () => {
       expect(() => {
-	i = new Int64(0x0020000000000000)
+        new Int64(-1, 0)
+      }).toThrow('Invalid arguments. Negative number is unacceptable.')
+      expect(() => {
+        new Int64(0, -1)
+      }).toThrow('Invalid arguments. Negative number is unacceptable.')
+    })
+    test('error unsafe int', () => {
+      expect(() => {
+        new Int64(0x0020000000000000)
       }).toThrow('Unsafe integer')
     })
     test('error invalid arguments', () => {
       expect(() => {
-	new Int64('hello')
+        new Int64('hello')
       }).toThrow('Invalid arguments')
     })
   })
