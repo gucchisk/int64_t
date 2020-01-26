@@ -30,6 +30,7 @@ let i = new Int64(Buffer.from([
 ```js
 let i = new Int64(0x12345678, 0x9abcdef0);
 ```
+　:warning: negative number is unacceptable
 
 * new Int64(int)
 ```js
