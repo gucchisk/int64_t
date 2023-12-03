@@ -1,26 +1,5 @@
 class Int64Base {
   constructor (first, second) {
-
-    const singleNumberConstructor = (i) => {
-      if (!Number.isSafeInteger(i)) {
-        throw new Error(`Unsafe integer`)
-      }
-      let high = 0, low = 0
-      if (i >= 0) {
-        high = i / 0x100000000
-        low = i & 0xffffffff
-      } else {
-        if (-i <= 0xffffffff) {
-          high = 0xffffffff
-          low = i & 0xffffffff
-        } else {
-          high = 0xffffffff - (((-i) / 0x100000000) >>> 0)
-          low = 0x100000000 - ((-i) & 0xffffffff)
-        }
-      }
-      this.buffer = int32PairToBuffer(high, low)
-    }
-
     // new Int64(Buffer)
     if (first instanceof Buffer) {
       const length = first.length
@@ -35,7 +14,7 @@ class Int64Base {
     if (typeof first === 'number') {
       // new Int64(Number)
       if (second === undefined) {
-        singleNumberConstructor(first)
+        this.buffer = intToBuffer(first)
         return
       }
       // new Int64(Number, Number)
@@ -222,7 +201,7 @@ export class Int64 extends Int64Base {
       if (radix !== 10) {
         noPrefixStr = uintStr.substring(2, uintStr.length)
       } else {
-        if (uintStr.length > 20) {
+        if (uintStr.length > 19) {
           throw new Error(`Over 64bit signed integer range`)
         }
         const intValue = parseInt(first)
@@ -515,6 +494,92 @@ Int64.Max = new Int64(0x7fffffff, 0xffffffff)
 Int64.Min = new Int64(0x80000000, 0)
 
 export class UInt64 extends Int64Base {
+  constructor(first, second) {
+    if (typeof first === 'string') {
+      let negative = false
+      if (first.charAt(0) === '-') {
+	throw new Error(`Cannot accept negative value`)
+      }
+      const radix = getRadix(first)
+      let noPrefixStr = first
+      if (radix !== 10) {
+	noPrefixStr = first.substring(2, first.length)
+      } else {
+	if (noPrefixStr.length > 20) {
+	  throw new Error(`Over 64bit unsigned integer range`)
+	}
+	const intValue = parseInt(noPrefixStr)
+	try {
+	  if (!isNaN(intValue)) {
+	    super(intValue)
+	    return
+	  }
+	} catch (e) {
+	}
+
+	let low = 0
+	let high = 0
+	let pos = 0
+	while (pos < noPrefixStr.length) {
+	  const i = parseInt(noPrefixStr[pos++])
+	  if (isNaN(i)) {
+	    throw new Error(`Invalid string as integer`)
+	  }
+	  low = low * 10 + i
+	  high = high * 10 + Math.floor(low / 0x100000000)
+	  low %= 0x100000000
+	}
+	if (high > 0xffffffff) {
+	  throw new Error(`Over 64bit unsigned integer range`)
+	}
+	super(int32PairToBuffer(high, low))
+	return
+      }
+      let high, low
+      switch (radix) {
+      case 2: {
+        if (noPrefixStr.length > 64) {
+          throw new Error(`Over 64bit unsigned integer range`)
+        }
+	if (noPrefixStr.length <= 53) {
+          const i = parseInt(noPrefixStr, radix)
+          if (isNaN(i)) {
+            throw new Error(`Invalid string as integer`)
+          }
+          super(i)
+	  return
+	}
+        const length = noPrefixStr.length
+        high = parseInt(noPrefixStr.substring(0, length - 32), radix)
+        low = parseInt(noPrefixStr.substring(length - 32, length), radix)
+        break
+      }
+      case 8:
+	break
+      case 16: {
+	const length = noPrefixStr.length
+	if (length > 16) {
+	  throw new Error(`Over 64bit unsigned integer range`)
+	}
+	if (length <= 8) {
+	  const i = parseInt(noPrefixStr, radix)
+	  if (isNaN(i)) {
+	    throw new Error(`Invalid string as integer`)
+	  }
+	  super(i)
+	  return
+	}
+	high = parseInt(noPrefixStr.substring(0, length -8), radix)
+	low = parseInt(noPrefixStr.substring(length - 8, length), radix)
+	break
+      }
+      }
+      super(int32PairToBuffer(high, low))
+      return
+    }
+    super(first, second)
+  }
+  
   typename () {
     return 'UInt64'
   }
@@ -644,6 +709,26 @@ function int32ToBuffer(num) {
     num >>= 8
   }
   return buf
+}
+
+function intToBuffer(num) {
+  if (!Number.isSafeInteger(num)) {
+    throw new Error(`Unsafe integer`)
+  }
+  let high = 0, low = 0
+  if (num >= 0) {
+    high = num / 0x100000000
+    low = num & 0xffffffff
+  } else {
+    if (-num <= 0xffffffff) {
+      high = 0xffffffff
+      low = num & 0xffffffff
+    } else {
+      high = 0xffffffff - (((-num) / 0x100000000) >>> 0)
+      low = 0x100000000 - ((-num) & 0xffffffff)
+    }
+  }
+  return int32PairToBuffer(high, low)
 }
 
 function shiftMaskHigh(num) {

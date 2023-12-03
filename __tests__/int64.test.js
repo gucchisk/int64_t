@@ -964,6 +964,104 @@ describe('Int64', () => {
 })
 
 describe('UInt64', () => {
+  describe('constructor', () => {
+    test('success decimal string cotructor', () => {
+      let i = new UInt64('15')
+      expect(i).toEqual(new UInt64(15))
+      i = new UInt64('123456789')
+      expect(i).toEqual(new UInt64(123456789))
+      i = new UInt64(String(Number.MAX_SAFE_INTEGER))
+      expect(i).toEqual(new UInt64(Number.MAX_SAFE_INTEGER))
+      i = new UInt64('9007199254740992')
+      expect(i).toEqual(new UInt64(0x200000, 0x0))
+      i = new UInt64('9223372036854775807')
+      expect(i).toEqual(Int64.Max)
+      i = new UInt64('18446744073709551615')
+      expect(i).toEqual(UInt64.Max)
+    })
+    test('error decimal string constructor', () => {
+      expect(() => {
+        new UInt64('18446744073709551616')
+      }).toThrow(`Over 64bit unsigned integer range`)
+      expect(() => {
+        new UInt64('100000000000000000000')
+      }).toThrow(`Over 64bit unsigned integer range`)
+      expect(() => {
+        new UInt64('-1')
+      }).toThrow(`Cannot accept negative value`)
+      expect(() => {
+        new UInt64('a')
+      }).toThrow(`Invalid string as integer`)
+      expect(() => {
+        new UInt64('1a')
+      }).toThrow(`Invalid string as integer`)
+      expect(() => {
+	new UInt64('9223a72036854775807')
+      }).toThrow(`Invalid string as integer`)
+      expect(() => {
+	new UInt64('9223a7203685477580a')
+      }).toThrow(`Invalid string as integer`)
+    })
+    test('success hex string constructor ', () => {
+      let i = new UInt64('0x15')
+      expect(i).toEqual(new UInt64(0x15))
+      i = new UInt64('0x12345678')
+      expect(i).toEqual(new UInt64(0x12345678))
+      i = new UInt64('0xffffffff')
+      expect(i).toEqual(new UInt64(0xffffffff))
+
+      i = new UInt64('0x123456789')
+      expect(i).toEqual(new UInt64(0x1, 0x23456789))
+      i = new UInt64('0xffffffffffffffff')
+      expect(i).toEqual(UInt64.Max)
+
+      i = new UInt64('0x8000000000000000')
+      expect(i).toEqual(Int64.Min.toUnsigned())
+      i = new UInt64('0x123456789abcdef0')
+      expect(i).toEqual(new UInt64(0x12345678, 0x9abcdef0))
+    })
+    test('error hex string constructor', () => {
+      expect(() => {
+        new UInt64('0x10000000000000000')
+      }).toThrow(`Over 64bit unsigned integer range`)
+      expect(() => {
+        new UInt64('-0xff')
+      }).toThrow(`Cannot accept negative value`)
+      expect(() => {
+        new UInt64('0xg')
+      }).toThrow(`Invalid string as integer`)
+    })
+    test('success binary string constructor', () => {
+      let i = new UInt64('0b11')
+      expect(i).toEqual(new UInt64(0b11))
+      i = new UInt64('0b00010010001101000101011001111000')
+      expect(i).toEqual(new UInt64(0x12345678))
+      i = new UInt64('0b000100100011010001010110011110001001')
+      expect(i).toEqual(new UInt64(0x123456789))
+      i = new UInt64('0b11111111111111111111111111111111111111111111111111111')
+      expect(i).toEqual(new UInt64(Number.MAX_SAFE_INTEGER))
+      i = new UInt64('0b111111111111111111111111111111111111111111111111111111')
+      expect(i).toEqual(new UInt64(0x3fffff, 0xffffffff))
+      i = new UInt64('0b0111111111111111111111111111111111111111111111111111111111111111')
+      expect(i).toEqual(Int64.Max.toUnsigned())
+      i = new UInt64('0b1111111111111111111111111111111111111111111111111111111111111111')
+      expect(i).toEqual(UInt64.Max)
+    })
+
+    test('error binary string constructor', () => {
+      let i
+      expect(() => {
+        new UInt64('0b10000000000000000000000000000000000000000000000000000000000000000')
+      }).toThrow(`Over 64bit unsigned integer range`)
+      expect(() => {
+        i = new UInt64('-0b10')
+      }).toThrow(`Cannot accept negative value`)
+      expect(() => {
+        i = new UInt64('0b12')
+      }).toThrow(`Invalid string as integer`)
+    })
+  })
+
   describe('typename', () => {
     test('UInt64', () => {
       const i = UInt64.Zero
