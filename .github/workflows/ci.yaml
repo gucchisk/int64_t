@@ -22,3 +22,4 @@ jobs:
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_nodejs_slsa3.yml@v2.1.0
     with:
       run-scripts: "install, test"
+      node-version: 24
