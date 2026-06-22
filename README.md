@@ -3,7 +3,7 @@
 64bit integer in pure Javascript
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CircleCI](https://circleci.com/gh/gucchisk/int64_t.svg?style=svg)](https://circleci.com/gh/gucchisk/int64_t)
+[![CI](https://github.com/gucchisk/int64_t/actions/workflows/ci.yaml/badge.svg)](https://github.com/gucchisk/int64_t/actions/workflows/ci.yaml)
 
 ## Usage
 
